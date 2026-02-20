@@ -1,0 +1,3 @@
+com\skillforge\config\CorsConfig.class
+com\skillforge\backend\BackendApplication.class
+com\skillforge\security\JwtUtil.class
