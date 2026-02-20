@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/skillforge
+    username: skillforge
+    password: skillforgepass
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+skillforge:
+  jwt:
+    secret: change_this_to_a_strong_secret_key
+    expiration-ms: 86400000
+
+logging:
+  level:
+    root: INFO
