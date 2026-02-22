@@ -9,28 +9,21 @@ export const AuthProvider = ({ children }) => {
 
   // ✅ LOGIN
   const login = async (email, password) => {
-    const res = await axios.post(
-      "http://localhost:8080/api/auth/login",
-      {
-        email: email,
-        password: password
-      },
-      {
-        headers: {
-          "Content-Type": "application/json"
-        }
+  const res = await axios.post(
+    "http://localhost:8080/api/auth/login",
+    {
+      email: email,
+      password: password
+    },
+    {
+      headers: {
+        "Content-Type": "application/json"
       }
-    );
+    }
+  );
 
-    const data = res.data;
-
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data));
-
-    setUser(data);
-
-    return data;
-  };
+  return res.data;
+};
 
   // ✅ REGISTER
   const register = async (userData) => {
