@@ -1,38 +1,64 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
-import api from '../services/api'
+import { createContext, useContext, useState } from "react";
+import axios from "axios";
 
-const AuthContext = createContext(null)
+const AuthContext = createContext();
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    const token = localStorage.getItem('sf_token')
-    const email = localStorage.getItem('sf_email')
-    const role = localStorage.getItem('sf_role')
-    return token ? { token, email, role } : null
-  })
+export const AuthProvider = ({ children }) => {
 
-  useEffect(() => {
-    if (user && user.token) {
-      api.setToken(user.token)
-    }
-  }, [user])
+  const [user, setUser] = useState(null);
 
-  const login = ({ token, email, role }) => {
-    localStorage.setItem('sf_token', token)
-    localStorage.setItem('sf_email', email)
-    localStorage.setItem('sf_role', role)
-    setUser({ token, email, role })
-  }
+  // ✅ LOGIN
+  const login = async (email, password) => {
+    const res = await axios.post(
+      "http://localhost:8080/api/auth/login",
+      {
+        email: email,
+        password: password
+      },
+      {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
 
-  const logout = () => {
-    localStorage.removeItem('sf_token')
-    localStorage.removeItem('sf_email')
-    localStorage.removeItem('sf_role')
-    api.setToken(null)
-    setUser(null)
-  }
+    const data = res.data;
 
-  return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>
-}
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data));
 
-export const useAuth = () => useContext(AuthContext)
+    setUser(data);
+
+    return data;
+  };
+
+  // ✅ REGISTER
+  const register = async (userData) => {
+    const res = await axios.post(
+      "http://localhost:8080/api/auth/register",
+      userData,
+      {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    const data = res.data;
+
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data));
+
+    setUser(data);
+
+    return data;
+  };
+
+  return (
+    <AuthContext.Provider value={{ login, register, user }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => useContext(AuthContext);

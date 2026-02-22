@@ -1,17 +1,47 @@
-import axios from 'axios'
+import axios from "axios";
 
-const instance = axios.create({ baseURL: '/api' })
-
-const api = {
-  setToken(token) {
-    if (token) instance.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    else delete instance.defaults.headers.common['Authorization']
+const API = axios.create({
+  baseURL: "http://localhost:8080/api",
+  headers: {
+    "Content-Type": "application/json",
   },
-  get(path) { return instance.get(path).then(r => r.data) },
-  post(path, body) { return instance.post(path, body).then(r => r.data) },
-  put(path, body) { return instance.put(path, body).then(r => r.data) },
-  delete(path) { return instance.delete(path).then(r => r.data) },
-  raw: instance
-}
+});
 
-export default api
+// attach token
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+// handle 401
+API.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err.response?.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "/login";
+    }
+    return Promise.reject(err);
+  }
+);
+
+// 🔐 AUTH
+export const authAPI = {
+  login: (data) => API.post("/auth/login", data),
+  register: (data) => API.post("/auth/register", data),
+};
+
+// 🎓 STUDENT
+export const studentAPI = {
+  getDashboard: () => API.get("/student/dashboard"),
+  getCourses: () => API.get("/student/courses"),
+};
+
+// 🛠 ADMIN
+export const adminAPI = {
+  getDashboard: () => API.get("/admin/dashboard"),
+};
+
+export default API;

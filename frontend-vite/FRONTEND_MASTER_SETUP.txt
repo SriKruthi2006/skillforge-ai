@@ -1,0 +1,234 @@
+You are a senior React UI architect.
+
+Upgrade the existing frontend of the project:
+
+Project: SkillForge – AI Adaptive Learning Platform
+
+STRICT RULES:
+- Do NOT create placeholders.
+- Do NOT skip pages.
+- Generate ALL frontend pages completely.
+- Use modern SaaS design (Stripe/Linear style).
+- Use Tailwind CSS properly.
+- Use reusable components.
+- Implement role-based UI (ADMIN / STUDENT).
+- Make everything responsive.
+- Use clean folder structure.
+- No incomplete code.
+
+========================================================
+TECH STACK
+========================================================
+
+- React (Vite)
+- Tailwind CSS
+- React Router DOM
+- Axios
+- Context API (Auth Context)
+- Recharts (for analytics)
+
+========================================================
+FOLDER STRUCTURE (GENERATE FULLY)
+========================================================
+
+src/
+ ┣ components/
+ ┃ ┣ layout/
+ ┃ ┃ ┣ Sidebar.jsx
+ ┃ ┃ ┣ Navbar.jsx
+ ┃ ┃ ┣ Layout.jsx
+ ┃ ┣ ui/
+ ┃ ┃ ┣ Card.jsx
+ ┃ ┃ ┣ Button.jsx
+ ┃ ┃ ┣ ProgressBar.jsx
+ ┃ ┃ ┣ StatsCard.jsx
+ ┃ ┃ ┣ Modal.jsx
+ ┣ pages/
+ ┃ ┣ auth/
+ ┃ ┃ ┣ Login.jsx
+ ┃ ┃ ┣ Register.jsx
+ ┃ ┣ student/
+ ┃ ┃ ┣ StudentDashboard.jsx
+ ┃ ┃ ┣ Courses.jsx
+ ┃ ┃ ┣ Test.jsx
+ ┃ ┃ ┣ Reports.jsx
+ ┃ ┣ admin/
+ ┃ ┃ ┣ AdminDashboard.jsx
+ ┃ ┃ ┣ ManageCourses.jsx
+ ┃ ┃ ┣ ManageQuestions.jsx
+ ┃ ┃ ┣ ManageUsers.jsx
+ ┣ context/
+ ┃ ┣ AuthContext.jsx
+ ┣ services/
+ ┃ ┣ api.js
+ ┣ App.jsx
+ ┣ main.jsx
+
+Generate ALL files fully.
+
+========================================================
+1️⃣ ADVANCED LOGIN PAGE
+========================================================
+
+Create a modern login page with:
+
+- Centered card
+- Logo at top (SkillForge)
+- Gradient background
+- Glassmorphism card
+- Email + Password fields
+- Remember me checkbox
+- Animated button hover
+- Error message display
+- Redirect based on role
+
+If role === ADMIN → /admin/dashboard
+If role === STUDENT → /student/dashboard
+
+========================================================
+2️⃣ NAVBAR + SIDEBAR
+========================================================
+
+Create professional SaaS sidebar:
+
+Sidebar:
+- Logo section
+- Navigation links with icons
+- Active route highlight
+- Collapse animation
+- Role-based menu items
+
+Student menu:
+- Dashboard
+- Courses
+- Tests
+- Reports
+- Profile
+
+Admin menu:
+- Dashboard
+- Manage Courses
+- Manage Questions
+- Manage Users
+- Reports
+
+Navbar:
+- User profile dropdown
+- Logout button
+- Dark/Light toggle
+- Notification icon
+
+========================================================
+3️⃣ STUDENT DASHBOARD
+========================================================
+
+Create advanced dashboard with:
+
+- Welcome header
+- Stats cards:
+   - Tests Completed
+   - Average Score
+   - Learning Time
+   - Topics Mastered
+- Progress bars
+- Upcoming tests section
+- AI recommended topics section
+- Performance chart (Recharts)
+
+========================================================
+4️⃣ ADMIN DASHBOARD
+========================================================
+
+Create admin dashboard with:
+
+- Total users
+- Total courses
+- Total tests
+- Recent activity table
+- Chart for user growth
+
+========================================================
+5️⃣ COURSES PAGE (STUDENT)
+========================================================
+
+- Course cards
+- Topic progress
+- Start Learning button
+- Clean modern grid layout
+
+========================================================
+6️⃣ TEST PAGE
+========================================================
+
+- Timer
+- Question navigator grid
+- Difficulty badge
+- Multiple choice options
+- Next / Previous buttons
+- Submit test button
+- Adaptive difficulty indicator
+
+========================================================
+7️⃣ REPORT PAGE
+========================================================
+
+- Score summary card
+- Weak areas section
+- AI feedback section
+- Suggested practice section
+- Improvement chart
+
+========================================================
+8️⃣ ADMIN MANAGEMENT PAGES
+========================================================
+
+ManageCourses:
+- Add course modal
+- Edit course
+- Delete course
+- Table view
+
+ManageQuestions:
+- Add question form
+- Difficulty selection
+- Assign to course
+- CRUD operations
+
+ManageUsers:
+- List users
+- Change role
+- Delete user
+
+========================================================
+9️⃣ AUTH CONTEXT
+========================================================
+
+Implement:
+- Store JWT in localStorage
+- Decode token to extract role
+- Provide login/logout
+- Protect routes
+- Redirect unauthorized users
+
+========================================================
+10️⃣ API INTEGRATION
+========================================================
+
+Create api.js:
+
+- Axios instance
+- Base URL: http://localhost:8080/api
+- Interceptor for JWT
+- Global error handling
+
+========================================================
+FINAL REQUIREMENTS
+========================================================
+
+- Generate full working UI
+- No missing imports
+- No placeholder text
+- Clean, professional design
+- Fully responsive
+- All routes configured in App.jsx
+- Layout wraps all protected pages
