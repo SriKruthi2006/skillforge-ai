@@ -1,58 +1,26 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import "../../styles/ForgotPassword.css";
 import logo from "../../assets/skillforge-icon.png";
-import "../../styles/Login.css";// reuse same styling + animation
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
-  const [msg, setMsg] = useState("");
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!email) {
-      setMsg("Please enter email");
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      // 👉 DEMO RESET (frontend only)
-      // later connect backend reset API
-      setTimeout(() => {
-        setMsg("✅ Reset link sent to your email");
-        setLoading(false);
-      }, 1000);
-
-    } catch (err) {
-      setMsg("❌ Failed to send reset link");
-      setLoading(false);
-    }
+    alert("Reset link sent to your email (demo)");
   };
 
   return (
-    <div className="login-container">
+    <div className="forgot-container">
+      <div className="forgot-card">
 
-      {/* animated background bubbles */}
-      <div className="bg-animation">
-        <span></span><span></span><span></span><span></span>
-      </div>
+        <img src={logo} alt="logo" className="forgot-logo" />
 
-      <div className="login-card">
+        <h2>SkillForge</h2>
+        <p className="subtitle">Reset your password 🔐</p>
 
-        {/* LOGO */}
-        <div className="logo-area">
-          <img src={logo} alt="SkillForge" className="logo-img" />
-          <h1>SkillForge</h1>
-          <p>Reset your password 🔐</p>
-        </div>
-
-        {/* message */}
-        {msg && <div className="success-msg">{msg}</div>}
-
-        {/* form */}
         <form onSubmit={handleSubmit}>
           <input
             type="email"
@@ -62,15 +30,12 @@ const ForgotPassword = () => {
             required
           />
 
-          <button type="submit" disabled={loading}>
-            {loading ? "Sending..." : "Send Reset Link"}
-          </button>
+          <button type="submit">Send Reset Link</button>
         </form>
 
-        {/* links */}
-        <div className="links">
-          <Link to="/login">⬅ Back to Login</Link>
-        </div>
+        <p className="back" onClick={() => navigate("/login")}>
+          ← Back to Login
+        </p>
 
       </div>
     </div>

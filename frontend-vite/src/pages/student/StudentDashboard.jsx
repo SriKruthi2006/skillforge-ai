@@ -1,183 +1,164 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "../../context/AuthContext";
-import { studentAPI } from "../../services/api";
-import Card from "../../components/ui/Card";
-import StatsCard from "../../components/ui/StatsCard";
-import ProgressBar from "../../components/ui/ProgressBar";
-import Button from "../../components/ui/Button";
+import { useState } from "react";
+import "../../styles/StudentDashboard.css";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Legend
 } from "recharts";
 
 const StudentDashboard = () => {
-  const { user } = useAuth();
+  const [active, setActive] = useState("dashboard");
+  const user = JSON.parse(localStorage.getItem("user"));
 
-  // 🔐 role protection
-  if (user?.role !== "STUDENT") {
-    return <p style={{ padding: 20 }}>Access Denied</p>;
-  }
-
-  const [dashboard, setDashboard] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    fetchDashboard();
-  }, []);
-
-  const fetchDashboard = async () => {
-    try {
-      const response = await studentAPI.getDashboard();
-
-      setDashboard(
-        response.data || {
-          testsCompleted: 12,
-          averageScore: 78,
-          learningTime: 45,
-          topicsMastered: 8,
-          upcomingTests: [
-            {
-              id: 1,
-              name: "JavaScript Fundamentals",
-              date: "2026-02-25",
-              difficulty: "Medium",
-            },
-            {
-              id: 2,
-              name: "React Advanced",
-              date: "2026-02-28",
-              difficulty: "Hard",
-            },
-          ],
-          recommendedTopics: [
-            { id: 1, name: "Async/Await in JS", progress: 60 },
-            { id: 2, name: "State Management", progress: 45 },
-          ],
-          performanceData: [
-            { week: "Week 1", score: 72 },
-            { week: "Week 2", score: 75 },
-            { week: "Week 3", score: 78 },
-            { week: "Week 4", score: 82 },
-          ],
-        }
-      );
-    } catch (err) {
-      setError("Failed to load dashboard");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+  const logout = () => {
+    localStorage.clear();
+    window.location.href = "/login";
   };
 
-  // ⏳ loading UI
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading dashboard...</p>
-        </div>
-      </div>
-    );
-  }
+  // sample chart data
+  const barData = [
+    { name: "Java", score: 80 },
+    { name: "React", score: 85 },
+    { name: "DBMS", score: 70 },
+    { name: "Aptitude", score: 75 },
+  ];
+
+  const pieData = [
+    { name: "Completed", value: 70 },
+    { name: "Remaining", value: 30 },
+  ];
+
+  const COLORS = ["#6c63ff", "#1f2937"];
 
   return (
-    <div className="space-y-6 p-6">
-      {/* Welcome */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">
-          Welcome back, {user?.name}! 👋
-        </h1>
-        <p className="text-gray-600 mt-1">
-          Here's your learning journey overview
-        </p>
-      </div>
+    <div className="dashboard">
 
-      {error && <p className="text-red-500">{error}</p>}
+      {/* NAVBAR */}
+      <nav className="navbar">
+        <h2>SkillForge</h2>
+      </nav>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatsCard
-          title="Tests Completed"
-          value={dashboard?.testsCompleted || 0}
-          icon={() => "📝"}
-          color="blue"
-        />
-        <StatsCard
-          title="Average Score"
-          value={`${dashboard?.averageScore || 0}%`}
-          icon={() => "⭐"}
-          color="green"
-        />
-        <StatsCard
-          title="Learning Time"
-          value={`${dashboard?.learningTime || 0}h`}
-          icon={() => "⏱️"}
-          color="purple"
-        />
-        <StatsCard
-          title="Topics Mastered"
-          value={dashboard?.topicsMastered || 0}
-          icon={() => "🎯"}
-          color="orange"
-        />
-      </div>
+      <div className="dashboard-body">
 
-      {/* Chart */}
-      <Card className="p-6">
-        <h2 className="text-xl font-bold mb-4">Performance</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={dashboard?.performanceData || []}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="week" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="score" fill="#3b82f6" radius={[8, 8, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-      </Card>
+        {/* SIDEBAR */}
+        <aside className="sidebar">
+          <h3>Menu</h3>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Upcoming tests */}
-        <div className="lg:col-span-2">
-          <Card className="p-6">
-            <h2 className="text-xl font-bold mb-4">📅 Upcoming Tests</h2>
-            <div className="space-y-3">
-              {dashboard?.upcomingTests?.map((test) => (
-                <div
-                  key={test.id}
-                  className="flex justify-between items-center p-4 border rounded-lg"
-                >
-                  <div>
-                    <p className="font-semibold">{test.name}</p>
-                    <p className="text-sm text-gray-500">{test.date}</p>
-                  </div>
+          <ul>
+            <li className={active==="dashboard"?"active":""}
+                onClick={()=>setActive("dashboard")}>Dashboard</li>
 
-                  <Button size="sm">Start</Button>
-                </div>
-              ))}
-            </div>
-          </Card>
-        </div>
+            <li className={active==="courses"?"active":""}
+                onClick={()=>setActive("courses")}>My Courses</li>
 
-        {/* Recommended */}
-        <Card className="p-6">
-          <h2 className="text-xl font-bold mb-4">🤖 Recommended</h2>
-          <div className="space-y-4">
-            {dashboard?.recommendedTopics?.map((topic) => (
-              <div key={topic.id}>
-                <p className="text-sm mb-2">{topic.name}</p>
-                <ProgressBar value={topic.progress} max={100} />
+            <li className={active==="tests"?"active":""}
+                onClick={()=>setActive("tests")}>Tests</li>
+
+            <li className={active==="results"?"active":""}
+                onClick={()=>setActive("results")}>Results</li>
+
+            <li className={active==="profile"?"active":""}
+                onClick={()=>setActive("profile")}>Profile</li>
+          </ul>
+
+          <button className="logout-btn" onClick={logout}>Logout</button>
+        </aside>
+
+        {/* MAIN */}
+        <main className="content">
+
+        {/* ================= DASHBOARD ================= */}
+        {active === "dashboard" && (
+          <>
+            <h1 className="page-title">
+              Welcome back, {user?.name} 👋
+            </h1>
+
+            {/* STATS BOXES */}
+            <div className="stats-grid">
+              <div className="stat-card">
+                <h4>Tests Completed</h4>
+                <p>5</p>
               </div>
-            ))}
-          </div>
-        </Card>
+
+              <div className="stat-card">
+                <h4>Average Score</h4>
+                <p>82%</p>
+              </div>
+
+              <div className="stat-card">
+                <h4>Topics Mastered</h4>
+                <p>8</p>
+              </div>
+            </div>
+
+            {/* CHARTS */}
+            <div className="charts-row">
+
+              {/* BAR CHART */}
+              <div className="chart-box">
+                <h3>Subject Performance</h3>
+                <ResponsiveContainer width="100%" height={250}>
+                  <BarChart data={barData}>
+                    <XAxis dataKey="name" stroke="#ccc"/>
+                    <YAxis stroke="#ccc"/>
+                    <Tooltip/>
+                    <Bar dataKey="score" fill="#6c63ff" radius={[6,6,0,0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* PIE CHART */}
+              <div className="chart-box">
+                <h3>Course Progress</h3>
+                <ResponsiveContainer width="100%" height={250}>
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      dataKey="value"
+                      label
+                    >
+                      {pieData.map((entry, index) => (
+                        <Cell key={index} fill={COLORS[index]} />
+                      ))}
+                    </Pie>
+                    <Legend/>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+
+            </div>
+          </>
+        )}
+
+        {/* ================= PROFILE ================= */}
+        {active === "profile" && (
+          <>
+            <h1 className="page-title left">My Profile 👤</h1>
+
+            <div className="profile-wrapper">
+              <div className="profile-card">
+                <div className="big-avatar">
+                  {user?.name?.charAt(0)}
+                </div>
+
+                <h2>{user?.name}</h2>
+                <p>{user?.email}</p>
+                <p><b>Role:</b> {user?.role}</p>
+
+                <button className="edit-btn">Edit Profile</button>
+              </div>
+            </div>
+          </>
+        )}
+
+        {active==="courses" && <h1 className="page-title">My Courses 📚</h1>}
+        {active==="tests" && <h1 className="page-title">Tests 📝</h1>}
+        {active==="results" && <h1 className="page-title">Results 📊</h1>}
+
+        </main>
       </div>
     </div>
   );

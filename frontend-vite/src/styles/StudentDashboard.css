@@ -1,0 +1,155 @@
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  background:#020617;
+  color:white;
+}
+
+.navbar{
+  background:#0f172a;
+  padding:18px 30px;
+  font-weight:bold;
+  font-size:20px;
+}
+
+.dashboard-body{
+  display:flex;
+  min-height:100vh;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:240px;
+  background:#020617;
+  padding:25px;
+  display:flex;
+  flex-direction:column;
+}
+
+.sidebar ul{
+  list-style:none;
+  padding:0;
+  margin-top:20px;
+  flex:1;
+}
+
+.sidebar li{
+  padding:14px;
+  margin-top:12px;
+  border-radius:12px;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.sidebar li:hover{
+  background:#111827;
+}
+
+.sidebar .active{
+  background:linear-gradient(90deg,#6c63ff,#7c3aed);
+}
+
+.logout-btn{
+  margin-top:auto;
+  padding:13px;
+  border:none;
+  border-radius:10px;
+  background:#ef4444;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* CONTENT */
+.content{
+  flex:1;
+  padding:40px 60px;
+}
+
+/* PAGE TITLE */
+.page-title{
+  font-size:32px;
+  font-weight:700;
+  margin-bottom:30px;
+}
+
+.page-title.left{
+  margin-left:10px;
+}
+
+/* STATS BOXES */
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:25px;
+  margin-bottom:40px;
+}
+
+.stat-card{
+  background:#0f172a;
+  padding:30px;
+  border-radius:18px;
+  text-align:center;
+  box-shadow:0 0 25px rgba(108,99,255,0.15);
+}
+
+.stat-card p{
+  font-size:28px;
+  color:#6c63ff;
+  font-weight:bold;
+}
+
+/* CHARTS */
+.charts-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:30px;
+}
+
+.chart-box{
+  background:#0f172a;
+  padding:25px;
+  border-radius:18px;
+}
+
+/* PROFILE */
+.profile-wrapper{
+  display:flex;
+  justify-content:center;
+  margin-top:30px;
+}
+
+.profile-card{
+  background:#0f172a;
+  padding:50px;
+  border-radius:22px;
+  width:420px;
+  text-align:center;
+  box-shadow:0 0 40px rgba(108,99,255,0.25);
+}
+
+.big-avatar{
+  width:90px;
+  height:90px;
+  background:linear-gradient(135deg,#6c63ff,#7c3aed);
+  border-radius:50%;
+  margin:0 auto 18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:34px;
+  font-weight:bold;
+}
+
+.edit-btn{
+  margin-top:25px;
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(90deg,#6c63ff,#7c3aed);
+  color:white;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+}

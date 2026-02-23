@@ -8,54 +8,44 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  // 🔥 Load user from localStorage when app starts
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    const stored = localStorage.getItem("user");
+    if (stored) setUser(JSON.parse(stored));
   }, []);
 
-  // 🔐 LOGIN FUNCTION
+  // 🔐 LOGIN
   const login = async (data) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/api/auth/login",
-        {
-          email: data.email,
-          password: data.password,
-        }
-      );
+    const res = await axios.post(
+      "http://localhost:8080/api/auth/login",
+      data
+    );
 
-      console.log("LOGIN RESPONSE:", response.data);
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("user", JSON.stringify(res.data));
+    setUser(res.data);
 
-      // Save token
-      localStorage.setItem("token", response.data.token);
+    return res.data;
+  };
 
-      // Save full user object
-      localStorage.setItem("user", JSON.stringify(response.data));
+  // 🆕 REGISTER FUNCTION 
+  const register = async (data) => {
+    const res = await axios.post(
+      "http://localhost:8080/api/auth/register",
+      data
+    );
 
-      setUser(response.data);
-
-      return response.data;
-    } catch (error) {
-      console.error("LOGIN ERROR:", error);
-      throw error;
-    }
+    return res.data;
   };
 
   // 🔓 LOGOUT
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.clear();
     setUser(null);
   };
 
-  const value = {
-    user,
-    login,
-    logout,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, login, register, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
