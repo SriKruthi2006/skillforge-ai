@@ -1,22 +1,31 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useAuth } from "./context/AuthContext";
+import { useEffect, useState } from "react";
 
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import ForgotPassword from "./pages/auth/ForgotPassword";
 
 function App() {
-  const { user, loading } = useAuth();
 
-  if (loading) return <div>Loading...</div>;
+  // 🔥 get user from localStorage
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("user");
+    if (stored) {
+      setUser(JSON.parse(stored));
+    }
+  }, []);
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" />} />
 
+      <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
 
       {/* student */}
       <Route
@@ -38,7 +47,6 @@ function App() {
         }
       />
 
-      <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
   );
 }

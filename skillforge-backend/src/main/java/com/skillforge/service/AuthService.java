@@ -1,14 +1,14 @@
 package com.skillforge.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.skillforge.dto.AuthResponse;
+import com.skillforge.dto.LoginRequest;
+import com.skillforge.dto.RegisterRequest;
 import com.skillforge.entity.User;
 import com.skillforge.repository.UserRepository;
 import com.skillforge.security.JwtService;
-import com.skillforge.dto.LoginRequest;
-import com.skillforge.dto.RegisterRequest;
-import com.skillforge.dto.AuthResponse;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
@@ -56,21 +56,21 @@ public class AuthService {
     // 🔥 LOGIN
     public AuthResponse login(LoginRequest req) {
 
-        User user = userRepo.findByEmail(req.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    User user = userRepo.findByEmail(req.getEmail())
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
-        }
-
-        String token = jwtService.generateToken(user.getEmail());
-
-        return new AuthResponse(
-                token,
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getRole().name()
-        );
+    if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
+        throw new RuntimeException("Invalid password");
     }
+
+    String token = jwtService.generateToken(user.getEmail());
+
+    return new AuthResponse(
+            token,
+            user.getId(),
+            user.getName(),
+            user.getEmail(),
+            user.getRole().name()
+    );
+}
 }

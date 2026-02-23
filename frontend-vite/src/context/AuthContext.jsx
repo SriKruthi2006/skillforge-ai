@@ -1,57 +1,61 @@
-import { createContext, useContext, useState } from "react";
 import axios from "axios";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export const useAuth = () => useContext(AuthContext);
 
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  // ✅ LOGIN
-  const login = async (email, password) => {
-  const res = await axios.post(
-    "http://localhost:8080/api/auth/login",
-    {
-      email: email,
-      password: password
-    },
-    {
-      headers: {
-        "Content-Type": "application/json"
-      }
+  // 🔥 Load user from localStorage when app starts
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
     }
-  );
+  }, []);
 
-  return res.data;
-};
-
-  // ✅ REGISTER
-  const register = async (userData) => {
-    const res = await axios.post(
-      "http://localhost:8080/api/auth/register",
-      userData,
-      {
-        headers: {
-          "Content-Type": "application/json"
+  // 🔐 LOGIN FUNCTION
+  const login = async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/login",
+        {
+          email: data.email,
+          password: data.password,
         }
-      }
-    );
+      );
 
-    const data = res.data;
+      console.log("LOGIN RESPONSE:", response.data);
 
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data));
+      // Save token
+      localStorage.setItem("token", response.data.token);
 
-    setUser(data);
+      // Save full user object
+      localStorage.setItem("user", JSON.stringify(response.data));
 
-    return data;
+      setUser(response.data);
+
+      return response.data;
+    } catch (error) {
+      console.error("LOGIN ERROR:", error);
+      throw error;
+    }
   };
 
-  return (
-    <AuthContext.Provider value={{ login, register, user }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+  // 🔓 LOGOUT
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+  };
 
-export const useAuth = () => useContext(AuthContext);
+  const value = {
+    user,
+    login,
+    logout,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};

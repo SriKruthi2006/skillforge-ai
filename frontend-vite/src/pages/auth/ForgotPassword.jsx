@@ -1,41 +1,73 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/skillforge-icon.png";
+import "../../styles/Login.css";// reuse same styling + animation
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [msg, setMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setMsg("Reset link sent to your email (demo)");
+
+    if (!email) {
+      setMsg("Please enter email");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // 👉 DEMO RESET (frontend only)
+      // later connect backend reset API
+      setTimeout(() => {
+        setMsg("✅ Reset link sent to your email");
+        setLoading(false);
+      }, 1000);
+
+    } catch (err) {
+      setMsg("❌ Failed to send reset link");
+      setLoading(false);
+    }
   };
 
   return (
     <div className="login-container">
+
+      {/* animated background bubbles */}
+      <div className="bg-animation">
+        <span></span><span></span><span></span><span></span>
+      </div>
+
       <div className="login-card">
 
-        {/* Logo */}
-        <div style={{ textAlign: "center", marginBottom: 20 }}>
-          <img src={logo} alt="logo" style={{ width: 100 }} />
-          <h1 style={{ color: "white", marginTop: 10 }}>SkillForge</h1>
-          <p style={{ color: "white", opacity: 0.9 }}>Reset your password 🔐</p>
+        {/* LOGO */}
+        <div className="logo-area">
+          <img src={logo} alt="SkillForge" className="logo-img" />
+          <h1>SkillForge</h1>
+          <p>Reset your password 🔐</p>
         </div>
 
-        {msg && <p style={{color:"lightgreen"}}>{msg}</p>}
+        {/* message */}
+        {msg && <div className="success-msg">{msg}</div>}
 
+        {/* form */}
         <form onSubmit={handleSubmit}>
           <input
             type="email"
-            placeholder="Enter your email"
+            placeholder="Enter your registered email"
             value={email}
-            onChange={(e)=>setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
 
-          <button type="submit">Send Reset Link</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Sending..." : "Send Reset Link"}
+          </button>
         </form>
 
+        {/* links */}
         <div className="links">
           <Link to="/login">⬅ Back to Login</Link>
         </div>
