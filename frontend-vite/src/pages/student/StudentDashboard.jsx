@@ -1,9 +1,12 @@
 import { useState } from "react";
 import "../../styles/StudentDashboard.css";
-import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend
-} from "recharts";
+import Courses from "./Courses";
+import TestPage from "./TestPage";
+import Report from "./Report";
+import Profile from "./Profile";
+import Leaderboard from "./LeaderBoard";
+
+import logo from "../../assets/skillforge-icon.png";
 
 const StudentDashboard = () => {
   const [active, setActive] = useState("dashboard");
@@ -14,47 +17,41 @@ const StudentDashboard = () => {
     window.location.href = "/login";
   };
 
-  // sample chart data
-  const barData = [
-    { name: "Java", score: 80 },
-    { name: "React", score: 85 },
-    { name: "DBMS", score: 70 },
-    { name: "Aptitude", score: 75 },
-  ];
-
-  const pieData = [
-    { name: "Completed", value: 70 },
-    { name: "Remaining", value: 30 },
-  ];
-
-  const COLORS = ["#6c63ff", "#1f2937"];
-
   return (
     <div className="dashboard">
-
-      {/* NAVBAR */}
+      
+      {/* ===== NAVBAR ===== */}
       <nav className="navbar">
-        <h2>SkillForge</h2>
+        <div className="nav-left">
+          <h2>SkillForge</h2>
+        </div>
+
+        <div className="nav-right">
+          <img src={logo} alt="logo" className="nav-logo" />
+        </div>
       </nav>
 
       <div className="dashboard-body">
 
-        {/* SIDEBAR */}
+        {/* ===== SIDEBAR ===== */}
         <aside className="sidebar">
           <h3>Menu</h3>
-
           <ul>
             <li className={active==="dashboard"?"active":""}
                 onClick={()=>setActive("dashboard")}>Dashboard</li>
 
             <li className={active==="courses"?"active":""}
-                onClick={()=>setActive("courses")}>My Courses</li>
+                onClick={()=>setActive("courses")}>Courses</li>
 
             <li className={active==="tests"?"active":""}
                 onClick={()=>setActive("tests")}>Tests</li>
 
             <li className={active==="results"?"active":""}
                 onClick={()=>setActive("results")}>Results</li>
+
+            {/* 🏆 NEW */}
+            <li className={active==="leaderboard"?"active":""}
+                onClick={()=>setActive("leaderboard")}>Leaderboard</li>
 
             <li className={active==="profile"?"active":""}
                 onClick={()=>setActive("profile")}>Profile</li>
@@ -63,100 +60,37 @@ const StudentDashboard = () => {
           <button className="logout-btn" onClick={logout}>Logout</button>
         </aside>
 
-        {/* MAIN */}
+        {/* ===== MAIN ===== */}
         <main className="content">
 
-        {/* ================= DASHBOARD ================= */}
-        {active === "dashboard" && (
-          <>
-            <h1 className="page-title">
-              Welcome back, {user?.name} 👋
-            </h1>
+          {active==="dashboard" && (
+            <>
+              <h1 className="page-title">
+                Welcome back, {user?.name} 👋
+              </h1>
 
-            {/* STATS BOXES */}
-            <div className="stats-grid">
-              <div className="stat-card">
-                <h4>Tests Completed</h4>
-                <p>5</p>
+              <div className="stats-grid">
+                <div className="stat-card"><h4>Courses</h4><p>4</p></div>
+                <div className="stat-card"><h4>Completed</h4><p>1</p></div>
+                <div className="stat-card"><h4>Pending</h4><p>3</p></div>
+                <div className="stat-card"><h4>Avg Score</h4><p>84%</p></div>
               </div>
 
-              <div className="stat-card">
-                <h4>Average Score</h4>
-                <p>82%</p>
-              </div>
-
-              <div className="stat-card">
-                <h4>Topics Mastered</h4>
-                <p>8</p>
-              </div>
-            </div>
-
-            {/* CHARTS */}
-            <div className="charts-row">
-
-              {/* BAR CHART */}
-              <div className="chart-box">
-                <h3>Subject Performance</h3>
-                <ResponsiveContainer width="100%" height={250}>
-                  <BarChart data={barData}>
-                    <XAxis dataKey="name" stroke="#ccc"/>
-                    <YAxis stroke="#ccc"/>
-                    <Tooltip/>
-                    <Bar dataKey="score" fill="#6c63ff" radius={[6,6,0,0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-
-              {/* PIE CHART */}
-              <div className="chart-box">
-                <h3>Course Progress</h3>
-                <ResponsiveContainer width="100%" height={250}>
-                  <PieChart>
-                    <Pie
-                      data={pieData}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      dataKey="value"
-                      label
-                    >
-                      {pieData.map((entry, index) => (
-                        <Cell key={index} fill={COLORS[index]} />
-                      ))}
-                    </Pie>
-                    <Legend/>
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-
-            </div>
-          </>
-        )}
-
-        {/* ================= PROFILE ================= */}
-        {active === "profile" && (
-          <>
-            <h1 className="page-title left">My Profile 👤</h1>
-
-            <div className="profile-wrapper">
-              <div className="profile-card">
-                <div className="big-avatar">
-                  {user?.name?.charAt(0)}
+              <div className="dashboard-progress">
+                <h3>Overall Progress</h3>
+                <div className="progress-bar-big">
+                  <div className="progress-fill" style={{width:"68%"}}></div>
                 </div>
-
-                <h2>{user?.name}</h2>
-                <p>{user?.email}</p>
-                <p><b>Role:</b> {user?.role}</p>
-
-                <button className="edit-btn">Edit Profile</button>
+                <p>68% Learning Completed</p>
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
 
-        {active==="courses" && <h1 className="page-title">My Courses 📚</h1>}
-        {active==="tests" && <h1 className="page-title">Tests 📝</h1>}
-        {active==="results" && <h1 className="page-title">Results 📊</h1>}
+          {active==="courses" && <Courses/>}
+          {active==="tests" && <TestPage/>}
+          {active==="results" && <Report/>}
+          {active==="profile" && <Profile/>}
+          {active==="leaderboard" && <Leaderboard/>}
 
         </main>
       </div>

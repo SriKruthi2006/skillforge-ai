@@ -52,57 +52,52 @@ if (res.role === "ADMIN" || res.role === "ROLE_ADMIN") {
     }
   };
 
-  return (
-    <div className="login-container">
-      <div className="login-card">
-        <img 
-  src={logo} 
-  alt="SkillForge" 
-  style={{
-    width: "150px",
-    height: "auto",
-    display: "block",
-    margin: "0 auto 20px"
-  }} 
-/>
-        <h2>Welcome Back</h2>
+return (
+  <div className="login-container">
+    <div className="login-card">
 
-        {error && <p className="error">{error}</p>}
+      <img src={logo} alt="SkillForge" className="logo" />
 
-        <form onSubmit={submit}>
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter email"
-            value={form.email}
-            onChange={changeHandler}
-            required
-          />
+      <h1 className="project-title">SkillForge</h1>
+      <h2>Welcome Back!</h2>
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter password"
-            value={form.password}
-            onChange={changeHandler}
-            required
-          />
+      {error && <p className="error">{error}</p>}
 
-          <button type="submit" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
-          </button>
-        </form>
+      <form onSubmit={submit}>
+        <input
+          type="email"
+          name="email"
+          placeholder="Enter email"
+          value={form.email}
+          onChange={changeHandler}
+          required
+        />
 
-        <p className="link" onClick={() => navigate("/forgot-password")}>
-          Forgot password? <span>Reset</span>
-        </p>
+        <input
+          type="password"
+          name="password"
+          placeholder="Enter password"
+          value={form.password}
+          onChange={changeHandler}
+          required
+        />
 
-        <p className="link" onClick={() => navigate("/register")}>
-          New user? <span>Register</span>
-        </p>
-      </div>
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
+      </form>
+
+      <p className="link" onClick={() => navigate("/forgot-password")}>
+        Forgot password? <span>Reset</span>
+      </p>
+
+      <p className="link" onClick={() => navigate("/register")}>
+        New user? <span>Register</span>
+      </p>
+
     </div>
-  );
+  </div>
+);
 };
 
 export default Login;

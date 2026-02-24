@@ -1,7 +1,7 @@
-const Report = () => {
+const Results = () => {
   return (
     <div>
-      <h1 className="page-title">Results</h1>
+      <h1 className="page-title">Exam Results</h1>
 
       <div className="card">
         <h3>Java Test</h3>
@@ -18,4 +18,4 @@ const Report = () => {
   );
 };
 
-export default Report;
+export default Results;
