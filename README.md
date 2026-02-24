@@ -101,6 +101,7 @@ http://localhost:5173
 ## 🔹 Backend Setup
 
 Open backend folder:
+
 cd backend<br>
 mvn spring-boot:run<br>
 
