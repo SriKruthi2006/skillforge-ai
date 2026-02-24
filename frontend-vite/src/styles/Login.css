@@ -32,9 +32,15 @@ body {
   color: white;
 }
 
-.logo {
-  width: 70px;
-  margin-bottom: 10px;
+
+.logo{
+  width:90px;
+  display:block;
+  margin:0 auto 15px;
+  background: transparent !important;
+   padding: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important; 
 }
 
 h2 {
@@ -82,3 +88,4 @@ button:hover {
   color: #ff4d4f;
   font-size: 14px;
 }
+

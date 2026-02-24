@@ -30,12 +30,15 @@ const Login = () => {
 
 console.log("LOGIN RESPONSE:", res);
 
-// ✅ Store in localStorage
-localStorage.setItem("token", res.token);
-localStorage.setItem("user", JSON.stringify(res));
 
 // ✅ Role based redirect
-if (res.role === "ADMIN") {
+// if (res.role === "ADMIN") {
+//   navigate("/admin/dashboard");
+// } else {
+//   navigate("/student/dashboard");
+// }
+
+if (res.role === "ADMIN" || res.role === "ROLE_ADMIN") {
   navigate("/admin/dashboard");
 } else {
   navigate("/student/dashboard");
@@ -52,7 +55,16 @@ if (res.role === "ADMIN") {
   return (
     <div className="login-container">
       <div className="login-card">
-        <img src={logo} alt="SkillForge" className="logo" />
+        <img 
+  src={logo} 
+  alt="SkillForge" 
+  style={{
+    width: "150px",
+    height: "auto",
+    display: "block",
+    margin: "0 auto 20px"
+  }} 
+/>
         <h2>Welcome Back</h2>
 
         {error && <p className="error">{error}</p>}
