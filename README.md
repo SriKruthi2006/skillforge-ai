@@ -60,26 +60,29 @@ JWT token stored in localStorage for authentication.
 
 
 
-# 📂 Project Folder Structure
+## 📁 Project Folder Structure
 
+```
 skillforge/
-📁 skillforge
- ┣ 📁 frontend-vite
- ┃ ┣ 📁 src
- ┃ ┃ ┣ 📁 pages
- ┃ ┃ ┣ 📁 styles
- ┃ ┃ ┣ 📁 services
- ┃ ┃ ┗ 📁 assets
- ┗ 📁 backend
-   ┣ 📁 controller
-   ┣ 📁 service
-   ┣ 📁 repository
-   ┣ 📁 dto
-   ┣ 📁 entity
-   ┗ 📁 config
-
-
----
+│
+├── frontend-vite/
+│   ├── src/
+│   │   ├── pages/
+│   │   │   ├── auth/
+│   │   │   ├── student/
+│   │   │   └── admin/
+│   │   ├── styles/
+│   │   ├── services/
+│   │   └── assets/
+│
+└── backend/
+    ├── controller/
+    ├── service/
+    ├── repository/
+    ├── dto/
+    ├── entity/
+    └── config/
+```
 
 # ⚙️ Installation & Setup
 
