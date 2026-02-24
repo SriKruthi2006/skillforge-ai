@@ -90,9 +90,9 @@ skillforge/
 
 Open terminal:
 
-cd frontend-vite
-npm install
-npm run dev
+cd frontend-vite <br>
+npm install<br>
+npm run dev<br>
 
 
 Frontend runs on:
@@ -101,8 +101,8 @@ http://localhost:5173
 ## 🔹 Backend Setup
 
 Open backend folder:
-cd backend
-mvn spring-boot:run
+cd backend<br>
+mvn spring-boot:run<br>
 
 Backend runs on:
 http://localhost:8080
