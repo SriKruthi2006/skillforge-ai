@@ -102,7 +102,7 @@ http://localhost:5173
 
 Open backend folder:
 
-cd backend<br>
+cd skillforge-backend<br>
 mvn spring-boot:run<br>
 
 Backend runs on:
