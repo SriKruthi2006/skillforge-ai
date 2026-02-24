@@ -156,7 +156,6 @@ Each subject contains:
 - Admin analytics dashboard
 - Email verification system
 - Dark/light mode toggle
-- Deployment on cloud (AWS/Render)
 
 ---
 
