@@ -1,29 +1,41 @@
-import React from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
-import LoginPage from './pages/LoginPage'
-import RegisterPage from './pages/RegisterPage'
-import Dashboard from './pages/Dashboard'
-import Courses from './pages/Courses'
-import TestPage from './pages/TestPage'
-import Report from './pages/Report'
-import { AuthProvider, useAuth } from './context/AuthContext'
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
 
-function PrivateRoute({ children }) {
-  const { user } = useAuth();
-  return user ? children : <Navigate to="/login" />;
-}
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import StudentDashboard from "./pages/student/StudentDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import ForgotPassword from "./pages/auth/ForgotPassword";
 
-export default function App() {
+function App() {
+  const { user } = useAuth();   // ✅ use context instead
+
   return (
-    <AuthProvider>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-        <Route path="/courses" element={<PrivateRoute><Courses /></PrivateRoute>} />
-        <Route path="/test/:id" element={<PrivateRoute><TestPage /></PrivateRoute>} />
-        <Route path="/report/:id" element={<PrivateRoute><Report /></PrivateRoute>} />
-      </Routes>
-    </AuthProvider>
-  )
+    <Routes>
+      <Route path="/" element={<Navigate to="/login" />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+
+      <Route
+        path="/student/dashboard"
+        element={
+          user?.role === "STUDENT"
+            ? <StudentDashboard />
+            : <Navigate to="/login" />
+        }
+      />
+
+      <Route
+        path="/admin/dashboard"
+        element={
+          user?.role === "ADMIN"
+            ? <AdminDashboard />
+            : <Navigate to="/login" />
+        }
+      />
+    </Routes>
+  );
 }
+
+export default App;
