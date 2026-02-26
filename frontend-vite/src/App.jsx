@@ -6,13 +6,14 @@ import Register from "./pages/auth/Register";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ForgotPassword from "./pages/auth/ForgotPassword";
+import Landing from "./pages/Landing";
 
 function App() {
   const { user } = useAuth();   // ✅ use context instead
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" />} />
+      <Route path="/" element={<Landing/>} /> 
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />

@@ -1,11 +1,9 @@
 import { useState } from "react";
-import "../../styles/StudentDashboard.css";
 import Courses from "./Courses";
 import TestPage from "./TestPage";
-import Report from "./Report";
+import Results from "./Results";
 import Profile from "./Profile";
 import Leaderboard from "./LeaderBoard";
-
 import logo from "../../assets/skillforge-icon.png";
 
 const StudentDashboard = () => {
@@ -18,79 +16,96 @@ const StudentDashboard = () => {
   };
 
   return (
-    <div className="dashboard">
-      
-      {/* ===== NAVBAR ===== */}
-      <nav className="navbar">
-        <div className="nav-left">
-          <h2>SkillForge</h2>
-        </div>
+    <div className="bg-[#020617] text-white min-h-screen">
 
-        <div className="nav-right">
-          <img src={logo} alt="logo" className="nav-logo" />
-        </div>
+      {/* NAVBAR */}
+      <nav className="bg-[#0f172a] py-5 px-10 flex justify-between items-center">
+        <h2 className="text-xl font-semibold">SkillForge</h2>
+        <img
+          src={logo}
+          alt="logo"
+          className="w-14 h-14 object-contain"
+        />
       </nav>
 
-      <div className="dashboard-body">
+      <div className="flex min-h-screen">
 
-        {/* ===== SIDEBAR ===== */}
-        <aside className="sidebar">
-          <h3>Menu</h3>
-          <ul>
-            <li className={active==="dashboard"?"active":""}
-                onClick={()=>setActive("dashboard")}>Dashboard</li>
+        {/* SIDEBAR */}
+        <aside className="w-60 bg-[#020617] p-6 flex flex-col border-r border-[#1e293b]">
+          <h3 className="text-lg mb-6">Menu</h3>
 
-            <li className={active==="courses"?"active":""}
-                onClick={()=>setActive("courses")}>Courses</li>
-
-            <li className={active==="tests"?"active":""}
-                onClick={()=>setActive("tests")}>Tests</li>
-
-            <li className={active==="results"?"active":""}
-                onClick={()=>setActive("results")}>Results</li>
-
-            {/* 🏆 NEW */}
-            <li className={active==="leaderboard"?"active":""}
-                onClick={()=>setActive("leaderboard")}>Leaderboard</li>
-
-            <li className={active==="profile"?"active":""}
-                onClick={()=>setActive("profile")}>Profile</li>
+          <ul className="space-y-3 flex-1">
+            {["dashboard", "courses", "tests", "results", "leaderboard", "profile"].map((item) => (
+              <li
+                key={item}
+                onClick={() => setActive(item)}
+                className={`cursor-pointer px-4 py-3 rounded-xl capitalize transition
+                ${active === item
+                    ? "bg-gradient-to-r from-[#6c63ff] to-[#7c3aed]"
+                    : "hover:bg-[#111827]"}
+                `}
+              >
+                {item}
+              </li>
+            ))}
           </ul>
 
-          <button className="logout-btn" onClick={logout}>Logout</button>
+          <button
+            onClick={logout}
+            className="mt-auto py-3 rounded-xl bg-red-500 hover:bg-red-600 transition font-semibold"
+          >
+            Logout
+          </button>
         </aside>
 
-        {/* ===== MAIN ===== */}
-        <main className="content">
+        {/* MAIN CONTENT */}
+        <main className="flex-1 p-14">
 
-          {active==="dashboard" && (
+          {active === "dashboard" && (
             <>
-              <h1 className="page-title">
+              <h1 className="text-4xl font-bold mb-10">
                 Welcome back, {user?.name} 👋
               </h1>
 
-              <div className="stats-grid">
-                <div className="stat-card"><h4>Courses</h4><p>4</p></div>
-                <div className="stat-card"><h4>Completed</h4><p>1</p></div>
-                <div className="stat-card"><h4>Pending</h4><p>3</p></div>
-                <div className="stat-card"><h4>Avg Score</h4><p>84%</p></div>
+              <div className="grid grid-cols-4 gap-6 mb-10">
+                {[
+                  { title: "Courses", value: 4 },
+                  { title: "Completed", value: 1 },
+                  { title: "Pending", value: 3 },
+                  { title: "Avg Score", value: "84%" },
+                ].map((card, index) => (
+                  <div
+                    key={index}
+                    className="bg-[#0f172a] p-6 rounded-2xl text-center shadow-lg"
+                  >
+                    <h4 className="mb-2">{card.title}</h4>
+                    <p className="text-3xl font-bold text-purple-400">
+                      {card.value}
+                    </p>
+                  </div>
+                ))}
               </div>
 
-              <div className="dashboard-progress">
-                <h3>Overall Progress</h3>
-                <div className="progress-bar-big">
-                  <div className="progress-fill" style={{width:"68%"}}></div>
+              <div className="bg-[#0f172a] p-8 rounded-2xl shadow-lg">
+                <h3 className="text-lg mb-4">Overall Progress</h3>
+                <div className="h-4 bg-[#1e293b] rounded-full">
+                  <div
+                    className="h-4 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500"
+                    style={{ width: "68%" }}
+                  />
                 </div>
-                <p>68% Learning Completed</p>
+                <p className="mt-4 text-gray-300">
+                  68% Learning Completed
+                </p>
               </div>
             </>
           )}
 
-          {active==="courses" && <Courses/>}
-          {active==="tests" && <TestPage/>}
-          {active==="results" && <Report/>}
-          {active==="profile" && <Profile/>}
-          {active==="leaderboard" && <Leaderboard/>}
+          {active === "courses" && <Courses />}
+          {active === "tests" && <TestPage />}
+          {active === "results" && <Results />}
+          {active === "profile" && <Profile />}
+          {active === "leaderboard" && <Leaderboard />}
 
         </main>
       </div>

@@ -1,40 +1,44 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../styles/ForgotPassword.css";
+import { useState } from "react";
 import logo from "../../assets/skillforge-icon.png";
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState("");
   const navigate = useNavigate();
+  const [email,setEmail] = useState("");
 
-  const handleSubmit = (e) => {
+  const submit=(e)=>{
     e.preventDefault();
-    alert("Reset link sent to your email (demo)");
+    alert("Reset link sent to "+email);
   };
 
   return (
-    <div className="forgot-container">
-      <div className="forgot-card">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#667eea] to-[#764ba2]">
 
-        <img src={logo} alt="logo" className="forgot-logo" />
+      <div className="backdrop-blur-lg bg-white/20 p-10 rounded-3xl w-[380px] text-center shadow-2xl">
 
-        <h2>SkillForge</h2>
-        <p className="subtitle">Reset your password 🔐</p>
+        <img src={logo} className="w-20 mx-auto mb-3"/>
+        <h1 className="text-2xl font-bold text-white">SkillForge</h1>
+        <p className="text-white mb-6">Reset your password 🔐</p>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={submit} className="flex flex-col gap-4">
+
           <input
-            type="email"
-            placeholder="Enter your registered email"
+            placeholder="Enter registered email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
+            onChange={(e)=>setEmail(e.target.value)}
+            className="p-3 rounded-xl"
           />
 
-          <button type="submit">Send Reset Link</button>
+          <button className="bg-white text-purple-700 font-bold py-3 rounded-xl">
+            Send Reset Link
+          </button>
         </form>
 
-        <p className="back" onClick={() => navigate("/login")}>
-          ← Back to Login
+        <p
+          className="text-white mt-4 cursor-pointer"
+          onClick={()=>navigate("/login")}
+        >
+          ← Back to login
         </p>
 
       </div>
