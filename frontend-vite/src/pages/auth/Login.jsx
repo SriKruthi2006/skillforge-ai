@@ -1,103 +1,89 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import "../../styles/Login.css";
 import logo from "../../assets/skillforge-icon.png";
 
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [form, setForm] = useState({
-    email: "",
-    password: ""
-  });
-
+  const [form, setForm] = useState({ email:"", password:"" });
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const changeHandler = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const change = (e)=>{
+    setForm({...form,[e.target.name]:e.target.value});
   };
 
-  const submit = async (e) => {
+  const submit = async(e)=>{
     e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    try {
+    try{
       const res = await login(form);
 
-console.log("LOGIN RESPONSE:", res);
-
-
-// ✅ Role based redirect
-// if (res.role === "ADMIN") {
-//   navigate("/admin/dashboard");
-// } else {
-//   navigate("/student/dashboard");
-// }
-
-if (res.role === "ADMIN" || res.role === "ROLE_ADMIN") {
-  navigate("/admin/dashboard");
-} else {
-  navigate("/student/dashboard");
-}
-
-    } catch (err) {
-      console.log("LOGIN ERROR:", err);
+      if(res.role === "ADMIN"){
+        navigate("/admin/dashboard");
+      }else{
+        navigate("/student/dashboard");
+      }
+    }catch{
       setError("Invalid email or password");
-    } finally {
-      setLoading(false);
     }
   };
 
-return (
-  <div className="login-container">
-    <div className="login-card">
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#667eea] to-[#764ba2]">
 
-      <img src={logo} alt="SkillForge" className="logo" />
+      <div className="backdrop-blur-lg bg-white/20 p-10 rounded-3xl w-[380px] text-center shadow-2xl">
 
-      <h1 className="project-title">SkillForge</h1>
-      <h2>Welcome Back!</h2>
+        <img src={logo} className="w-20 mx-auto mb-3"/>
+        <h1 className="text-2xl font-bold text-white">SkillForge</h1>
+        <p className="text-white mb-6">Welcome Back!</p>
 
-      {error && <p className="error">{error}</p>}
+        {error && <p className="text-red-300">{error}</p>}
 
-      <form onSubmit={submit}>
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter email"
-          value={form.email}
-          onChange={changeHandler}
-          required
-        />
+        <form onSubmit={submit} className="flex flex-col gap-4">
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter password"
-          value={form.password}
-          onChange={changeHandler}
-          required
-        />
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter email"
+            value={form.email}
+            onChange={change}
+            className="p-3 rounded-xl outline-none"
+            required
+          />
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
+          <input
+            type="password"
+            name="password"
+            placeholder="Enter password"
+            value={form.password}
+            onChange={change}
+            className="p-3 rounded-xl outline-none"
+            required
+          />
 
-      <p className="link" onClick={() => navigate("/forgot-password")}>
-        Forgot password? <span>Reset</span>
-      </p>
+          <button className="bg-white text-purple-700 font-bold py-3 rounded-xl">
+            Login
+          </button>
+        </form>
 
-      <p className="link" onClick={() => navigate("/register")}>
-        New user? <span>Register</span>
-      </p>
+        <p
+          className="text-white mt-4 cursor-pointer"
+          onClick={()=>navigate("/forgot-password")}
+        >
+          Forgot password? <span className="text-yellow-300 font-bold">Reset</span>
+        </p>
 
+        <p
+          className="text-white mt-2 cursor-pointer"
+          onClick={()=>navigate("/register")}
+        >
+          New user? <span className="text-yellow-300 font-bold">Register</span>
+        </p>
+
+      </div>
     </div>
-  </div>
-);
+  );
 };
 
 export default Login;

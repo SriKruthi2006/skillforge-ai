@@ -36,16 +36,16 @@ const Courses = () => {
 
   return (
     <div>
-      <h1 className="page-title">Courses</h1>
+      <h1 className="text-[32px] font-bold mb-8">Courses</h1>
 
       {!selected ? (
-        <div className="courses-grid">
+        <div className="grid grid-cols-3 gap-5">
           {Object.keys(data).map((s,i)=>(
-            <div key={i} className="course-card"
+            <div key={i} className="bg-[#0f172a] py-5 px-5 rounded-[16px] cursor-pointer"
                  onClick={()=>setSelected(s)}>
               <h3>{s}</h3>
-              <div className="progress-bar">
-                <div className="progress-fill"
+              <div className="h-2 bg-[#1e293b] rounded-[10px] my-2.5">
+                <div className="h-2 bg-gradient-to-r from-[#6c63ff] to-[#7c3aed] rounded-[10px]"
                   style={{width:data[s].progress+"%"}}></div>
               </div>
               <p>{data[s].progress}% completed</p>
@@ -54,16 +54,16 @@ const Courses = () => {
         </div>
       ) : (
         <>
-          <button className="back-btn" onClick={()=>setSelected(null)}>← Back</button>
-          <h2>{selected} Topics</h2>
+          <button className="py-2 px-3.5 bg-[#6c63ff] border-none rounded-2 text-white mb-4" onClick={()=>setSelected(null)}>← Back</button>
+          <h2 className="text-2xl font-bold mb-4">{selected} Topics</h2>
 
           {data[selected].topics.map((t,i)=>(
-            <div className="topic-card" key={i}>
+            <div className="bg-[#0f172a] py-5 px-5 rounded-[14px] mt-4 flex justify-between items-center" key={i}>
               <h4>{t}</h4>
-              <div className="topic-actions">
-                <button>Video</button>
-                <button>Assignment</button>
-                <span className={i<3?"done":"pending"}>
+              <div className="flex gap-2.5">
+                <button className="mr-2.5 py-1.5 px-3 border-none rounded-2 bg-[#6c63ff] text-white">Video</button>
+                <button className="py-1.5 px-3 border-none rounded-2 bg-[#6c63ff] text-white">Assignment</button>
+                <span className={i<3?"text-green-500 font-bold":"text-amber-500 font-bold"}>
                   {i<3?"Completed":"Pending"}
                 </span>
               </div>
