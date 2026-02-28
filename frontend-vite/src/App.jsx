@@ -11,35 +11,37 @@ import ResetPassword from "./pages/auth/ResetPassword";
 import Landing from "./pages/Landing";
 
 function App() {
-  const { user } = useAuth();   // ✅ use context instead
+  const { user } = useAuth();
 
   return (
-    <Routes>
-      <Route path="/" element={<Landing/>} /> 
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/verify-otp" element={<VerifyOtp />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
+    <div className="min-h-screen w-screen overflow-x-hidden bg-gray-50">
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify-otp" element={<VerifyOtp />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
-      <Route
-        path="/student/dashboard"
-        element={
-          user?.role === "STUDENT"
-            ? <StudentDashboard />
-            : <Navigate to="/login" />
-        }
-      />
+        <Route
+          path="/student/dashboard"
+          element={
+            user?.role === "STUDENT"
+              ? <StudentDashboard />
+              : <Navigate to="/login" />
+          }
+        />
 
-      <Route
-        path="/admin/dashboard"
-        element={
-          user?.role === "ADMIN"
-            ? <AdminDashboard />
-            : <Navigate to="/login" />
-        }
-      />
-    </Routes>
+        <Route
+          path="/admin/dashboard"
+          element={
+            user?.role === "ADMIN"
+              ? <AdminDashboard />
+              : <Navigate to="/login" />
+          }
+        />
+      </Routes>
+    </div>
   );
 }
 
