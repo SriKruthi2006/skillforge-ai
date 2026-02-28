@@ -12,11 +12,11 @@ const StudentDashboard = () => {
 
   const logout = () => {
     localStorage.clear();
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
   return (
-    <div className="bg-[#020617] text-white min-h-screen">
+    <div className="bg-[#020617] text-white min-h-screen  w-full">
 
       {/* NAVBAR */}
       <nav className="bg-[#0f172a] py-5 px-10 flex justify-between items-center">

@@ -6,6 +6,8 @@ import Register from "./pages/auth/Register";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ForgotPassword from "./pages/auth/ForgotPassword";
+import VerifyOtp from "./pages/auth/VerifyOtp";
+import ResetPassword from "./pages/auth/ResetPassword";
 import Landing from "./pages/Landing";
 
 function App() {
@@ -17,6 +19,8 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/verify-otp" element={<VerifyOtp />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
 
       <Route
         path="/student/dashboard"
