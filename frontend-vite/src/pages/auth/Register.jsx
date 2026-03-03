@@ -44,7 +44,7 @@ const Register = () => {
           <select name="role" onChange={change}
             className="p-3 rounded-xl">
             <option value="STUDENT">Student</option>
-            <option value="ADMIN">Admin</option>
+            <option value="ADMIN">Instructor</option>
           </select>
 
           <button className="bg-white text-purple-700 font-bold py-3 rounded-xl">

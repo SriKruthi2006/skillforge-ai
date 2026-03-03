@@ -1,9 +1,15 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import logo from "../../assets/skillforge-icon.png";
 
 const StudentDashboard = () => {
   const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <div className="bg-[#020617] text-white min-h-screen w-full">
@@ -26,85 +32,16 @@ const StudentDashboard = () => {
 
           <ul className="space-y-3 flex-1">
 
-            <li>
-              <NavLink
-                to="/student/dashboard"
-                className={({ isActive }) =>
-                  `block px-4 py-3 rounded-xl capitalize transition ${
-                    isActive
-                      ? "bg-gradient-to-r from-[#6c63ff] to-[#7c3aed]"
-                      : "hover:bg-[#111827]"
-                  }`
-                }
-              >
-                dashboard
-              </NavLink>
-            </li>
-
-            <li>
-              <NavLink
-                to="/student/courses"
-                className={({ isActive }) =>
-                  `block px-4 py-3 rounded-xl capitalize transition ${
-                    isActive
-                      ? "bg-gradient-to-r from-[#6c63ff] to-[#7c3aed]"
-                      : "hover:bg-[#111827]"
-                  }`
-                }
-              >
-                courses
-              </NavLink>
-            </li>
-
-            <li>
-              <NavLink
-                to="/student/tests"
-                className={({ isActive }) =>
-                  `block px-4 py-3 rounded-xl capitalize transition ${
-                    isActive
-                      ? "bg-gradient-to-r from-[#6c63ff] to-[#7c3aed]"
-                      : "hover:bg-[#111827]"
-                  }`
-                }
-              >
-                tests
-              </NavLink>
-            </li>
-
-            <li>
-              <NavLink
-                to="/student/results"
-                className={({ isActive }) =>
-                  `block px-4 py-3 rounded-xl capitalize transition ${
-                    isActive
-                      ? "bg-gradient-to-r from-[#6c63ff] to-[#7c3aed]"
-                      : "hover:bg-[#111827]"
-                  }`
-                }
-              >
-                results
-              </NavLink>
-            </li>
-
-            <li>
-              <NavLink
-                to="/student/profile"
-                className={({ isActive }) =>
-                  `block px-4 py-3 rounded-xl capitalize transition ${
-                    isActive
-                      ? "bg-gradient-to-r from-[#6c63ff] to-[#7c3aed]"
-                      : "hover:bg-[#111827]"
-                  }`
-                }
-              >
-                profile
-              </NavLink>
-            </li>
+            <SidebarLink to="/student/dashboard" label="dashboard" />
+            <SidebarLink to="/student/courses" label="courses" />
+            <SidebarLink to="/student/tests" label="tests" />
+            <SidebarLink to="/student/results" label="results" />
+            <SidebarLink to="/student/profile" label="profile" />
 
           </ul>
 
           <button
-            onClick={logout}
+            onClick={handleLogout}
             className="mt-auto py-3 rounded-xl bg-red-500 hover:bg-red-600 transition font-semibold"
           >
             Logout
@@ -115,9 +52,28 @@ const StudentDashboard = () => {
         <main className="flex-1 p-14">
           <Outlet />
         </main>
+
       </div>
     </div>
   );
 };
+
+/* Reusable Sidebar Link */
+const SidebarLink = ({ to, label }) => (
+  <li>
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `block px-4 py-3 rounded-xl capitalize transition ${
+          isActive
+            ? "bg-gradient-to-r from-[#6c63ff] to-[#7c3aed]"
+            : "hover:bg-[#111827]"
+        }`
+      }
+    >
+      {label}
+    </NavLink>
+  </li>
+);
 
 export default StudentDashboard;

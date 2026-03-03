@@ -8,7 +8,7 @@ const ResumeLearning = () => {
   const lastCourse = coursesData[0];
 
   const handleResume = () => {
-    navigate(`/student/tests/${lastCourse.id}`);
+    navigate(`/student/courses?courseId=${lastCourse.id}`);
   };
 
   return (

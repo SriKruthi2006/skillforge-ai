@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import coursesData from "../../data/coursesData";
 
 const Courses = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
   const [selectedCourseId, setSelectedCourseId] = useState(null);
+  const [videoUrl, setVideoUrl] = useState(null);
 
   const courseIdFromURL = searchParams.get("courseId");
 
@@ -51,17 +54,59 @@ const Courses = () => {
               </div>
 
               <div className="flex gap-3">
-                <button className="px-4 py-2 bg-blue-600 rounded-lg text-sm hover:bg-blue-700 transition">
-                  Watch Video
-                </button>
+                <button
+  onClick={() => setVideoUrl("open")}
+  className="px-4 py-2 bg-blue-600 rounded-lg text-sm hover:bg-blue-700 transition"
+>
+  Watch Video
+</button>
 
-                <button className="px-4 py-2 bg-green-600 rounded-lg text-sm hover:bg-green-700 transition">
+                <button
+                  onClick={() =>
+                    navigate(`/student/tests/${selectedCourse.id}`)
+                  }
+                  className="px-4 py-2 bg-green-600 rounded-lg text-sm hover:bg-green-700 transition"
+                >
                   Assignment
                 </button>
               </div>
             </div>
           ))}
         </div>
+
+        {/* 🎥 VIDEO MODAL */}
+        {videoUrl && (
+  <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+    <div className="bg-[#0f172a] w-[900px] h-[500px] rounded-2xl relative flex flex-col">
+
+      {/* Close Button */}
+      <button
+        onClick={() => setVideoUrl(null)}
+        className="absolute top-4 right-4 text-white text-2xl"
+      >
+        ✖
+      </button>
+
+      {/* Fake Video Screen */}
+      <div className="flex-1 bg-black rounded-t-2xl flex items-center justify-center">
+        <p className="text-gray-400 text-xl">
+          Video Screen
+        </p>
+      </div>
+
+      {/* Video Title Section */}
+      <div className="p-6">
+        <h2 className="text-lg font-semibold">
+          Lesson Video
+        </h2>
+        <p className="text-gray-400 text-sm">
+          This is where your video content will appear.
+        </p>
+      </div>
+
+    </div>
+  </div>
+)}
       </div>
     );
   }
