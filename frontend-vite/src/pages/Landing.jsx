@@ -75,7 +75,7 @@ const Landing = () => {
           <img
             src={hero}
             alt="learning"
-            className="w-[420px] animate-bounce"
+            className="w-[420px] "
           />
         </div>
 
