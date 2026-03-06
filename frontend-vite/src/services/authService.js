@@ -1,21 +1,29 @@
 import axios from "axios";
+import api from "./api";
 
 const API_BASE_URL = "http://localhost:8080/api/auth";
 
-const sendOtp = (email) => {
+// Register User
+export const register = async (data) => {
+  const response = await api.post("/auth/register", data);
+  return response.data;
+};
+
+// Send OTP
+export const sendOtp = (email) => {
   return axios.post(`${API_BASE_URL}/send-otp`, { email });
 };
 
-const verifyOtp = (email, otp) => {
+// Verify OTP
+export const verifyOtp = (email, otp) => {
   return axios.post(`${API_BASE_URL}/verify-otp`, { email, otp });
 };
 
-const resetPassword = (email, otp, newPassword) => {
+// Reset Password
+export const resetPassword = (email, otp, newPassword) => {
   return axios.post(`${API_BASE_URL}/reset-password-with-otp`, {
     email,
     otp,
     newPassword,
   });
 };
-
-export { sendOtp, verifyOtp, resetPassword };
