@@ -1,53 +1,169 @@
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import quizData from "../../data/quizData";
+import coursesData from "../../data/coursesData";
+
 const TestPage = () => {
+  const { courseId } = useParams();
+  const navigate = useNavigate();
+
+  const selectedCourse = coursesData.find(
+    (course) => course.id === Number(courseId)
+  );
+
+  const courseName = selectedCourse?.title;
+  const questions = quizData[courseName] || [];
+
+  const [started, setStarted] = useState(false);
+  const [current, setCurrent] = useState(0);
+  const [selected, setSelected] = useState("");
+  const [score, setScore] = useState(0);
+  const [finished, setFinished] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
+
+  // ⏱ Timer Logic
+  useEffect(() => {
+    if (!started || finished) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev === 1) {
+          clearInterval(timer);
+          setFinished(true);
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [started, finished]);
+
+  const handleNext = () => {
+    if (selected === questions[current].answer) {
+      setScore(score + 1);
+    }
+
+    setSelected("");
+
+    if (current + 1 < questions.length) {
+      setCurrent(current + 1);
+    } else {
+      setFinished(true);
+    }
+  };
+
+  // 💾 Store result when finished
+  useEffect(() => {
+    if (finished && started) {
+      const results =
+        JSON.parse(localStorage.getItem("quizResults")) || [];
+
+      results.push({
+        course: courseName,
+        score,
+        total: questions.length,
+        date: new Date().toLocaleString(),
+      });
+
+      localStorage.setItem(
+        "quizResults",
+        JSON.stringify(results)
+      );
+    }
+  }, [finished]);
+
+  const formatTime = () => {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
+
+  if (!selectedCourse) {
+    return <h1>Course Not Found</h1>;
+  }
+
+  // ================= START SCREEN =================
+  if (!started) {
+    return (
+      <div className="text-center">
+        <h1 className="text-4xl font-bold mb-6">
+          {courseName} Quiz
+        </h1>
+        <p className="text-gray-400 mb-8">
+          10 Questions | 10 Minutes
+        </p>
+
+        <button
+          onClick={() => setStarted(true)}
+          className="px-8 py-3 bg-purple-600 rounded-xl text-lg"
+        >
+          Start Quiz
+        </button>
+      </div>
+    );
+  }
+
+  // ================= RESULT SCREEN =================
+  if (finished) {
+    return (
+      <div className="text-center">
+        <h1 className="text-4xl font-bold mb-6">
+          Quiz Completed 🎉
+        </h1>
+        <p className="text-2xl text-purple-400">
+          You scored {score} out of {questions.length}
+        </p>
+
+        <button
+          onClick={() => navigate("/student/results")}
+          className="mt-6 px-6 py-2 bg-purple-600 rounded-lg"
+        >
+          View Results
+        </button>
+      </div>
+    );
+  }
+
+  // ================= QUIZ SCREEN =================
   return (
-    <div className="flex-1 p-14">
+    <div className="max-w-3xl mx-auto">
+      <div className="flex justify-between mb-4">
+        <h1 className="text-2xl font-bold">
+          {courseName} Quiz
+        </h1>
+        <span className="text-red-400 font-semibold">
+          ⏱ {formatTime()}
+        </span>
+      </div>
 
-      <h1 className="text-5xl font-bold mb-14">Upcoming Tests</h1>
+      <div className="bg-[#0f172a] p-8 rounded-2xl">
+        <h2 className="text-xl mb-6">
+          Q{current + 1}. {questions[current].question}
+        </h2>
 
-      <div className="space-y-10 max-w-5xl">
-
-        {/* Test 1 */}
-        <div className="bg-[#0f172a] rounded-3xl p-10 flex justify-between items-center shadow-lg">
-
-          <div>
-            <h3 className="text-2xl font-semibold mb-3">
-              Aptitude Grand Test
-            </h3>
-            <p className="text-gray-300 text-lg">Date: 25 March</p>
-            <p className="text-gray-300 text-lg">Duration: 60 mins</p>
-          </div>
-
-          <button className="
-          px-10 py-4
-          rounded-xl
-          text-lg font-semibold
-          bg-gradient-to-r from-purple-500 to-indigo-500
-          hover:scale-105 transition">
-            Start Test
-          </button>
+        <div className="space-y-4">
+          {questions[current].options.map((option, index) => (
+            <div
+              key={index}
+              onClick={() => setSelected(option)}
+              className={`p-4 rounded-xl cursor-pointer ${
+                selected === option
+                  ? "bg-purple-600"
+                  : "bg-[#1e293b] hover:bg-[#334155]"
+              }`}
+            >
+              {option}
+            </div>
+          ))}
         </div>
 
-        {/* Test 2 */}
-        <div className="bg-[#0f172a] rounded-3xl p-10 flex justify-between items-center shadow-lg">
-
-          <div>
-            <h3 className="text-2xl font-semibold mb-3">
-              Java Mock Test
-            </h3>
-            <p className="text-gray-300 text-lg">Date: 28 March</p>
-            <p className="text-gray-300 text-lg">Duration: 90 mins</p>
-          </div>
-
-          <button className="
-          px-10 py-4
-          rounded-xl
-          text-lg font-semibold
-          bg-gradient-to-r from-purple-500 to-indigo-500
-          hover:scale-105 transition">
-            Start Test
-          </button>
-        </div>
-
+        <button
+          onClick={handleNext}
+          disabled={!selected}
+          className="mt-6 px-6 py-2 bg-purple-600 rounded-lg"
+        >
+          {current === questions.length - 1 ? "Submit" : "Next"}
+        </button>
       </div>
     </div>
   );

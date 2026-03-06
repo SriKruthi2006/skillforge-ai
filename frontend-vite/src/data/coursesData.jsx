@@ -1,0 +1,68 @@
+const coursesData = [
+  {
+    id: 1,
+    title: "Python",
+    progress: 80,
+    description: "Master Python from beginner to advanced.",
+    lessons: [
+      { title: "Introduction to Python", level: "Beginner" },
+      { title: "Variables & Data Types", level: "Beginner" },
+      { title: "Operators", level: "Beginner" },
+      { title: "Conditional Statements", level: "Beginner" },
+      { title: "Loops", level: "Beginner" },
+      { title: "Functions", level: "Intermediate" },
+      { title: "Lists & Dictionaries", level: "Intermediate" },
+      { title: "File Handling", level: "Intermediate" },
+      { title: "OOP Concepts", level: "Advanced" },
+      { title: "Exception Handling", level: "Advanced" },
+      { title: "Working with APIs", level: "Advanced" },
+    ],
+  },
+  {
+    id: 2,
+    title: "Java",
+    progress: 60,
+    description: "Complete Java roadmap.",
+    lessons: [
+      { title: "Introduction to Java", level: "Beginner" },
+      { title: "JVM & JDK", level: "Beginner" },
+      { title: "Control Statements", level: "Beginner" },
+      { title: "OOP Concepts", level: "Intermediate" },
+      { title: "Collections Framework", level: "Intermediate" },
+      { title: "Exception Handling", level: "Intermediate" },
+      { title: "Multithreading", level: "Advanced" },
+      { title: "Streams API", level: "Advanced" },
+      { title: "Spring Boot Basics", level: "Advanced" },
+    ],
+  },
+  {
+    id: 3,
+    title: "Aptitude",
+    progress: 70,
+    description: "Quantitative aptitude training.",
+    lessons: [
+      { title: "Number System", level: "Beginner" },
+      { title: "Percentages", level: "Beginner" },
+      { title: "Profit & Loss", level: "Intermediate" },
+      { title: "Time & Work", level: "Intermediate" },
+      { title: "Probability", level: "Advanced" },
+      { title: "Permutation & Combination", level: "Advanced" },
+    ],
+  },
+  {
+    id: 4,
+    title: "Logical Reasoning",
+    progress: 55,
+    description: "Logical thinking development.",
+    lessons: [
+      { title: "Blood Relations", level: "Beginner" },
+      { title: "Direction Sense", level: "Beginner" },
+      { title: "Coding & Decoding", level: "Intermediate" },
+      { title: "Seating Arrangement", level: "Intermediate" },
+      { title: "Puzzles", level: "Advanced" },
+      { title: "Critical Reasoning", level: "Advanced" },
+    ],
+  },
+];
+
+export default coursesData;

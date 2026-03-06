@@ -1,14 +1,32 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { sendOtp } from "../../services/authService";
 import logo from "../../assets/skillforge-icon.png";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
-  const [email,setEmail] = useState("");
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const submit=(e)=>{
+  const submit = async (e) => {
     e.preventDefault();
-    alert("Reset link sent to "+email);
+    setError("");
+    setLoading(true);
+
+    try {
+      await sendOtp(email);
+      alert("OTP sent to your email!");
+      navigate("/verify-otp", { state: { email } });
+    } catch (err) {
+      const message =
+        err.response?.data?.message ||
+        err.message ||
+        "Unable to send OTP. Please try again.";
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -20,17 +38,25 @@ const ForgotPassword = () => {
         <h1 className="text-2xl font-bold text-white">SkillForge</h1>
         <p className="text-white mb-6">Reset your password 🔐</p>
 
+        {error && <p className="text-red-300 mb-4">{error}</p>}
+
         <form onSubmit={submit} className="flex flex-col gap-4">
 
           <input
+            type="email"
             placeholder="Enter registered email"
             value={email}
             onChange={(e)=>setEmail(e.target.value)}
-            className="p-3 rounded-xl"
+            className="p-3 rounded-xl outline-none"
+            required
           />
 
-          <button className="bg-white text-purple-700 font-bold py-3 rounded-xl">
-            Send Reset Link
+          <button 
+            type="submit"
+            disabled={loading}
+            className="bg-white text-purple-700 font-bold py-3 rounded-xl disabled:opacity-50"
+          >
+            {loading ? "Sending..." : "Send OTP"}
           </button>
         </form>
 

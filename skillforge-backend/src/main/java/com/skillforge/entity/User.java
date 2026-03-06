@@ -1,5 +1,7 @@
 package com.skillforge.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,6 +13,8 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+
+
 
 @Entity
 @Table(name = "users")
@@ -40,6 +44,13 @@ public class User {
 
     @Column(name = "created_at")
     private Long createdAt;
+
+    // OTP based reset details
+    @Column(name = "reset_otp")
+    private String resetOtp;
+
+    @Column(name = "reset_otp_expiry")
+    private LocalDateTime resetOtpExpiry;
 
     @PrePersist
     protected void onCreate() {
@@ -99,6 +110,22 @@ public class User {
 
     public Long getCreatedAt() {
         return createdAt;
+    }
+
+    public String getResetOtp() {
+        return resetOtp;
+    }
+
+    public void setResetOtp(String resetOtp) {
+        this.resetOtp = resetOtp;
+    }
+
+    public LocalDateTime getResetOtpExpiry() {
+        return resetOtpExpiry;
+    }
+
+    public void setResetOtpExpiry(LocalDateTime resetOtpExpiry) {
+        this.resetOtpExpiry = resetOtpExpiry;
     }
 
     // ===== ROLE ENUM =====

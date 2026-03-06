@@ -7,13 +7,18 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const stored = localStorage.getItem("user");
-    if (stored) setUser(JSON.parse(stored));
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+
+    setLoading(false); // VERY IMPORTANT
   }, []);
 
-  // 🔐 LOGIN
   const login = async (data) => {
     const res = await axios.post(
       "http://localhost:8080/api/auth/login",
@@ -27,24 +32,13 @@ export const AuthProvider = ({ children }) => {
     return res.data;
   };
 
-  // 🆕 REGISTER FUNCTION 
-  const register = async (data) => {
-    const res = await axios.post(
-      "http://localhost:8080/api/auth/register",
-      data
-    );
-
-    return res.data;
-  };
-
-  // 🔓 LOGOUT
   const logout = () => {
     localStorage.clear();
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
