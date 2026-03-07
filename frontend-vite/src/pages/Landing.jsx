@@ -10,7 +10,7 @@ const Landing = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#020617] text-white">
+    <div className="h-screen w-screen overflow-hidden bg-[#020617] text-white">
 
       {/* ===== NAVBAR ===== */}
       <nav className="flex justify-between items-center px-16 py-6">
@@ -37,7 +37,7 @@ const Landing = () => {
       </nav>
 
       {/* ===== HERO SECTION ===== */}
-      <section className="flex items-center justify-between px-20 mt-16">
+      <section className="flex items-center justify-between px-20 h-[calc(100vh-96px)] max-w-7xl mx-auto">
 
         {/* LEFT TEXT */}
         <div className="max-w-xl">

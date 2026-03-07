@@ -17,46 +17,50 @@ import Profile from "./pages/student/Profile";
 import CoursePlayer from "./pages/student/CoursePlayer";
 import TestSelect from "./pages/student/TestSelect";
 
-
 function App() {
-  const { user, loading } = useAuth();  // ✅ FIXED
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-[#020617]">
         <div className="w-10 h-10 border-4 border-blue-300 border-t-blue-600 rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen w-screen overflow-x-hidden bg-gray-50">
+    <div className="min-h-screen w-full bg-[#020617]">
+
       <Routes>
+
+        {/* Public Pages */}
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        
 
-<Route
-  path="/student"
-  element={
-    user?.role === "STUDENT"
-      ? <StudentDashboard />
-      : <Navigate to="/login" />
-  }
->
-  <Route index element={<Navigate to="dashboard" />} />
-  <Route path="dashboard" element={<DashboardHome />} />
-  <Route path="courses" element={<Courses />} />
-  <Route path="tests" element={<TestSelect />} />
-  <Route path="tests/:courseId" element={<TestPage />} />
-  <Route path="results" element={<Results />} />
-  <Route path="profile" element={<Profile />} />
-  <Route path="course/:courseId" element={<CoursePlayer />} />
-</Route>
+        {/* Student Routes */}
+        <Route
+          path="/student"
+          element={
+            user?.role === "STUDENT"
+              ? <StudentDashboard />
+              : <Navigate to="/login" />
+          }
+        >
+          <Route index element={<Navigate to="dashboard" />} />
+          <Route path="dashboard" element={<DashboardHome />} />
+          <Route path="courses" element={<Courses />} />
+          <Route path="tests" element={<TestSelect />} />
+          <Route path="tests/:courseId" element={<TestPage />} />
+          <Route path="results" element={<Results />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="course/:courseId" element={<CoursePlayer />} />
+        </Route>
+
+        {/* Admin Route */}
         <Route
           path="/admin/dashboard"
           element={
@@ -65,7 +69,9 @@ function App() {
               : <Navigate to="/login" />
           }
         />
+
       </Routes>
+
     </div>
   );
 }

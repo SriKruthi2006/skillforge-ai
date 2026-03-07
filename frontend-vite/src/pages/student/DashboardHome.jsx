@@ -8,13 +8,14 @@ const DashboardHome = () => {
   const { user } = useAuth();
 
   return (
-    <>
-      <h1 className="text-4xl font-bold mb-10">
+    <div className="space-y-10">
+
+      <h1 className="text-4xl font-bold">
         Welcome back, {user?.name} 👋
       </h1>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-4 gap-6 mb-10">
+      <div className="grid grid-cols-4 gap-6">
         <Card title="Courses" value={4} />
         <Card title="Completed" value={1} />
         <Card title="Pending" value={3} />
@@ -22,14 +23,15 @@ const DashboardHome = () => {
       </div>
 
       {/* Graph + Resume */}
-      <div className="grid grid-cols-2 gap-6 mb-10">
+      <div className="grid grid-cols-2 gap-6">
         <ProgressChart />
         <ResumeLearning />
       </div>
 
       {/* New Courses */}
       <NewCourses />
-    </>
+
+    </div>
   );
 };
 
