@@ -2,7 +2,6 @@ import { useAuth } from "../../context/AuthContext";
 import ProgressChart from "./components/ProgressChart";
 import ResumeLearning from "./components/ResumeLearning";
 import NewCourses from "./components/NewCourses";
-import coursesData from "../../data/coursesData";
 
 const DashboardHome = () => {
   const { user } = useAuth();

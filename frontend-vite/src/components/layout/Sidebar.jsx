@@ -1,83 +1,75 @@
-import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
-const Sidebar = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+const Sidebar = ({ isOpen, setIsOpen }) => {
   const location = useLocation();
-  const { user, logout, isAdmin } = useAuth();
+  const { logout, isAdmin } = useAuth();
 
   const studentMenuItems = [
     { label: 'Dashboard', icon: '📊', path: '/student/dashboard' },
     { label: 'Courses', icon: '📚', path: '/student/courses' },
     { label: 'Tests', icon: '✏️', path: '/student/tests' },
-    { label: 'Reports', icon: '📈', path: '/student/reports' },
+    { label: 'Results', icon: '📈', path: '/student/results' },
     { label: 'Profile', icon: '👤', path: '/student/profile' },
   ];
 
   const adminMenuItems = [
     { label: 'Dashboard', icon: '📊', path: '/admin/dashboard' },
-    { label: 'Manage Courses', icon: '📚', path: '/admin/courses' },
-    { label: 'Manage Questions', icon: '❓', path: '/admin/questions' },
-    { label: 'Manage Users', icon: '👥', path: '/admin/users' },
+    { label: 'Courses', icon: '📚', path: '/admin/courses' },
+    { label: 'Questions', icon: '❓', path: '/admin/questions' },
+    { label: 'Users', icon: '👥', path: '/admin/users' },
     { label: 'Reports', icon: '📈', path: '/admin/reports' },
   ];
 
   const menuItems = isAdmin ? adminMenuItems : studentMenuItems;
-
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) => location.pathname.startsWith(path.split('/').slice(0, -1).join('/'));
 
   return (
     <aside
-      className={`bg-white border-r border-gray-200 transition-all duration-300 ${
-        isCollapsed ? 'w-20' : 'w-64'
-      } min-h-screen flex flex-col fixed left-0 top-0`}
+      className={`bg-gradient-to-b from-slate-800 to-slate-900 border-r border-slate-700 transition-all duration-300 overflow-hidden ${
+        isOpen ? 'w-64' : 'w-20'
+      } min-h-screen flex flex-col sticky top-0`}
     >
       {/* Header */}
-      <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-        {!isCollapsed && (
+      <div className="p-4 border-b border-slate-700 flex items-center justify-between">
+        {isOpen && (
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
+            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
               SF
             </div>
-            <span className="font-bold text-lg text-gray-900">SkillForge</span>
+            <span className="font-bold text-lg text-white">SkillForge</span>
           </div>
         )}
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          {isCollapsed ? '→' : '←'}
-        </button>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2 overflow-auto">
+      <nav className="flex-1 p-3 space-y-2 overflow-y-auto scrollbar-hide">
         {menuItems.map((item) => (
           <Link
             key={item.path}
             to={item.path}
-            className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors whitespace-nowrap ${
+            className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group ${
               isActive(item.path)
-                ? 'bg-blue-50 text-blue-600 font-semibold'
-                : 'text-gray-700 hover:bg-gray-50'
+                ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20'
+                : 'text-slate-400 hover:bg-slate-700 hover:text-slate-100'
             }`}
-            title={isCollapsed ? item.label : ''}
+            title={!isOpen ? item.label : ''}
           >
-            <span className="text-lg">{item.icon}</span>
-            {!isCollapsed && <span>{item.label}</span>}
+            <span className="text-xl flex-shrink-0">{item.icon}</span>
+            {isOpen && <span className="text-sm font-medium">{item.label}</span>}
           </Link>
         ))}
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-gray-200 space-y-2">
+      <div className="p-3 border-t border-slate-700">
         <button
           onClick={logout}
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors font-medium"
+          className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-slate-400 hover:bg-red-600/20 hover:text-red-400 transition-all duration-200"
+          title="Logout"
         >
-          <span className="text-lg">🚪</span>
-          {!isCollapsed && <span>Logout</span>}
+          <span className="text-xl flex-shrink-0">🚪</span>
+          {isOpen && <span className="text-sm font-medium">Logout</span>}
         </button>
       </div>
     </aside>

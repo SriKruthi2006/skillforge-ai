@@ -1,21 +1,13 @@
 import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
-const Navbar = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
+  const { user } = useAuth();
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-40">
-      <div className="flex items-center justify-between px-6 py-4 ml-64">
+    <nav className="bg-slate-800 border-b border-slate-700 sticky top-0 z-40 shadow-lg">
+      <div className="flex items-center justify-between px-6 py-4">
         {/* Search */}
         <div className="flex-1 max-w-md">
           <input

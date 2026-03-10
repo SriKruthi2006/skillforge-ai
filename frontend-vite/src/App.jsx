@@ -8,16 +8,19 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import VerifyOtp from "./pages/auth/VerifyOtp";
 import ResetPassword from "./pages/auth/ResetPassword";
+
 import Landing from "./pages/Landing";
 import DashboardHome from "./pages/student/DashboardHome";
 import Courses from "./pages/student/Courses";
 import TestPage from "./pages/student/TestPage";
 import Results from "./pages/student/Results";
 import Profile from "./pages/student/Profile";
-import CoursePlayer from "./pages/student/CoursePlayer";
+import LessonViewer from "./pages/student/LessonViewer";
 import TestSelect from "./pages/student/TestSelect";
+import CoursePlayer from "./pages/student/CoursePlayer";
 
 function App() {
+
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -29,11 +32,11 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#020617]">
+    <div className="min-h-screen w-full bg-[#020617] text-white">
 
       <Routes>
 
-        {/* Public Pages */}
+        {/* PUBLIC ROUTES */}
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -41,7 +44,7 @@ function App() {
         <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route path="/reset-password" element={<ResetPassword />} />
 
-        {/* Student Routes */}
+        {/* STUDENT ROUTES */}
         <Route
           path="/student"
           element={
@@ -53,14 +56,16 @@ function App() {
           <Route index element={<Navigate to="dashboard" />} />
           <Route path="dashboard" element={<DashboardHome />} />
           <Route path="courses" element={<Courses />} />
+          <Route path="courses/:courseId/player" element={<CoursePlayer />} />
           <Route path="tests" element={<TestSelect />} />
           <Route path="tests/:courseId" element={<TestPage />} />
+          {/* legacy single-topic viewer, still supported */}
+          <Route path="lesson/:topicId" element={<LessonViewer />} />
           <Route path="results" element={<Results />} />
           <Route path="profile" element={<Profile />} />
-          <Route path="course/:courseId" element={<CoursePlayer />} />
         </Route>
 
-        {/* Admin Route */}
+        {/* ADMIN */}
         <Route
           path="/admin/dashboard"
           element={
