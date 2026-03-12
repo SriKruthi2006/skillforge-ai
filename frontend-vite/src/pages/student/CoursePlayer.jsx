@@ -7,9 +7,9 @@ import {
   markLessonComplete,
   getCourse,
 } from "../../services/courseService";
-import CourseSidebar from "../../components/CourseSidebar";
-import LessonContent from "../../components/LessonContent";
-import ProgressBar from "../../components/ui/ProgressBar";
+
+import CourseModules from "../../components/CourseModules";
+import LessonViewer from "../../components/LessonViewer";
 
 const CoursePlayer = () => {
   const { courseId } = useParams();
@@ -19,17 +19,27 @@ const CoursePlayer = () => {
   const [lessonsMap, setLessonsMap] = useState({});
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [completedLessons, setCompletedLessons] = useState([]);
-  const [progressDetails, setProgressDetails] = useState({ completedLessons: 0, totalLessons: 0, progress: 0 });
+
+  const [progressDetails, setProgressDetails] = useState({
+    completedLessons: 0,
+    totalLessons: 0,
+    progress: 0,
+  });
+
   const [loading, setLoading] = useState(true);
+
+  // fullscreen state shared with lesson viewer
+  const [fullscreen, setFullscreen] = useState(false);
 
   useEffect(() => {
     const load = async () => {
       setLoading(true);
+
       try {
         const courseRes = await getCourse(courseId);
         setCourseTitle(courseRes.data.title || "");
       } catch (e) {
-        console.error("could not fetch course info", e);
+        console.error(e);
       }
 
       try {
@@ -38,15 +48,22 @@ const CoursePlayer = () => {
         setTopics(t);
 
         const lessonsObj = {};
+
         await Promise.all(
           t.map(async (topic) => {
-            const lres = await getLessonsByTopic(topic.id);
-            lessonsObj[topic.id] = lres.data || [];
+            const res = await getLessonsByTopic(topic.id);
+            lessonsObj[topic.id] = res.data || [];
           })
         );
+
         setLessonsMap(lessonsObj);
+
+        if (t.length > 0 && lessonsObj[t[0].id]?.length > 0) {
+          setSelectedLesson(lessonsObj[t[0].id][0]);
+        }
+
       } catch (e) {
-        console.error("failed to load topics/lessons", e);
+        console.error(e);
       }
 
       try {
@@ -54,11 +71,12 @@ const CoursePlayer = () => {
         setProgressDetails(progRes.data);
         setCompletedLessons(progRes.data.completedLessonIds || []);
       } catch (e) {
-        console.error("could not load progress", e);
+        console.error(e);
       }
 
       setLoading(false);
     };
+
     load();
   }, [courseId]);
 
@@ -69,48 +87,146 @@ const CoursePlayer = () => {
   const handleMarkComplete = async (lesson) => {
     try {
       await markLessonComplete(lesson.id);
+
       setCompletedLessons((prev) => [...prev, lesson.id]);
-      
-      // Update progress details
-      const updatedProgress = await getCourseProgressDetails(courseId);
-      setProgressDetails(updatedProgress.data);
+
+      const updated = await getCourseProgressDetails(courseId);
+      setProgressDetails(updated.data);
+
     } catch (e) {
-      console.error("failed to mark complete", e);
+      console.error(e);
     }
   };
 
-  const allLessons = Object.values(lessonsMap).flat();
-  const totalLessons = progressDetails.totalLessons || 0;
-  const progressPercent = progressDetails.progress || 0;
+  const getAllLessons = () => {
+    return Object.values(lessonsMap).flat();
+  };
+
+  const handleNextLesson = () => {
+    const all = getAllLessons();
+    const index = all.findIndex((l) => l.id === selectedLesson?.id);
+
+    if (index < all.length - 1) {
+      setSelectedLesson(all[index + 1]);
+    }
+  };
+
+  const handlePrevLesson = () => {
+    const all = getAllLessons();
+    const index = all.findIndex((l) => l.id === selectedLesson?.id);
+
+    if (index > 0) {
+      setSelectedLesson(all[index - 1]);
+    }
+  };
 
   if (loading) {
-    return <p className="text-white p-10">Loading course...</p>;
+    return (
+      <div className="flex items-center justify-center h-[calc(100vh-5rem)]">
+        Loading course...
+      </div>
+    );
   }
 
   return (
-    <div className="flex h-full text-white">
-      <CourseSidebar
-        topics={topics.map((t) => ({
-          ...t,
-          lessons: lessonsMap[t.id] || [],
-        }))}
-        completedLessons={completedLessons}
-        selectedLessonId={selectedLesson?.id}
-        onLessonClick={handleLessonClick}
-      />
+    <div className="flex flex-col h-[calc(100vh-5rem)] bg-slate-50">
 
-      <div className="flex-1 flex flex-col">
-        <div className="p-6">
-          <h1 className="text-3xl font-bold mb-2">{courseTitle}</h1>
-          <ProgressBar value={progressDetails.completedLessons} max={totalLessons} />
+      {/* Hide header in fullscreen */}
+      {!fullscreen && (
+        <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-8 py-6 shadow-lg">
+          <div className="flex items-start justify-between max-w-7xl mx-auto">
+
+            <div className="flex-1">
+
+              <div className="flex items-center gap-2 mb-3 text-sm text-blue-100">
+                <span>My Courses</span>
+                <span>›</span>
+                <span>{courseTitle}</span>
+              </div>
+
+              <h1 className="text-4xl font-bold mb-3">
+                {courseTitle}
+              </h1>
+
+              <div className="flex items-center gap-6 text-sm">
+
+                <div className="flex items-center gap-2">
+                  <span>👁</span>
+                  <span>{progressDetails.totalLessons} lessons</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span>📄</span>
+                  <span>Beginner</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span>🏷</span>
+                  <span>By Admin</span>
+                </div>
+
+              </div>
+
+            </div>
+
+            <div className="text-right">
+              <div className="bg-white/20 backdrop-blur-md rounded-lg px-5 py-3">
+                <div className="text-sm text-blue-100 mb-1">
+                  Your Progress
+                </div>
+                <div className="text-3xl font-bold">
+                  {progressDetails.progress}%
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* MAIN CONTENT */}
+
+      <div className="flex flex-1 overflow-hidden gap-6 p-6 max-w-7xl mx-auto w-full">
+
+        {/* LESSON SIDEBAR (always visible) */}
+
+        <div className="w-80 bg-white rounded-xl shadow-md border border-slate-200 flex flex-col overflow-hidden">
+
+          <div className="border-b p-4 font-bold text-slate-700">
+            COURSE CONTENT
+          </div>
+
+          <CourseModules
+            topics={topics.map((t) => ({
+              ...t,
+              lessons: lessonsMap[t.id] || [],
+            }))}
+            completedLessons={completedLessons}
+            selectedLessonId={selectedLesson?.id}
+            onLessonClick={handleLessonClick}
+          />
+
         </div>
 
-        <LessonContent
-          lesson={selectedLesson}
-          isCompleted={completedLessons.includes(selectedLesson?.id)}
-          onMarkComplete={handleMarkComplete}
-        />
+        {/* LESSON CONTENT */}
+
+        <div className="flex-1 overflow-hidden">
+
+          <LessonViewer
+            lesson={selectedLesson}
+            isCompleted={completedLessons.includes(selectedLesson?.id)}
+            onMarkComplete={handleMarkComplete}
+            onNextLesson={handleNextLesson}
+            onPrevLesson={handlePrevLesson}
+            courseProgress={progressDetails}
+            fullscreen={fullscreen}
+            setFullscreen={setFullscreen}
+          />
+
+        </div>
+
       </div>
+
     </div>
   );
 };

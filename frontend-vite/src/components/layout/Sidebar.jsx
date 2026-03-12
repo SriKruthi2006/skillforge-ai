@@ -26,18 +26,18 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
   return (
     <aside
-      className={`bg-gradient-to-b from-slate-800 to-slate-900 border-r border-slate-700 transition-all duration-300 overflow-hidden ${
+      className={`bg-white border-r border-slate-200 transition-all duration-300 overflow-hidden ${
         isOpen ? 'w-64' : 'w-20'
-      } min-h-screen flex flex-col sticky top-0`}
+      } min-h-screen flex flex-col sticky top-0 shadow-sm`}
     >
       {/* Header */}
-      <div className="p-4 border-b border-slate-700 flex items-center justify-between">
+      <div className="p-4 border-b border-slate-200 flex items-center justify-between">
         {isOpen && (
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
               SF
             </div>
-            <span className="font-bold text-lg text-white">SkillForge</span>
+            <span className="font-bold text-lg text-slate-900">SkillForge</span>
           </div>
         )}
       </div>
@@ -50,8 +50,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             to={item.path}
             className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group ${
               isActive(item.path)
-                ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20'
-                : 'text-slate-400 hover:bg-slate-700 hover:text-slate-100'
+                ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md'
+                : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
             }`}
             title={!isOpen ? item.label : ''}
           >
@@ -62,10 +62,10 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       </nav>
 
       {/* Footer */}
-      <div className="p-3 border-t border-slate-700">
+      <div className="p-3 border-t border-slate-200">
         <button
           onClick={logout}
-          className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-slate-400 hover:bg-red-600/20 hover:text-red-400 transition-all duration-200"
+          className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-slate-700 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
           title="Logout"
         >
           <span className="text-xl flex-shrink-0">🚪</span>

@@ -1,79 +1,43 @@
-import { useAuth } from '../../context/AuthContext';
-import { useState } from 'react';
+import { useAuth } from "../../context/AuthContext";
 
 const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
+
   const { user } = useAuth();
-  const [showUserMenu, setShowUserMenu] = useState(false);
 
   return (
-    <nav className="bg-slate-800 border-b border-slate-700 sticky top-0 z-40 shadow-lg">
-      <div className="flex items-center justify-between px-6 py-4">
-        {/* Search */}
-        <div className="flex-1 max-w-md">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+    <header className="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between">
 
-        {/* Right side */}
-        <div className="flex items-center gap-4">
-          {/* Notifications */}
-          <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-            🔔
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-          </button>
+      {/* Left */}
+      <div className="flex items-center gap-4">
 
-          {/* Dark mode toggle */}
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            {darkMode ? '☀️' : '🌙'}
-          </button>
+        {/* Toggle Button */}
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="p-2 rounded-lg hover:bg-slate-200 transition"
+        >
+          ☰
+        </button>
 
-          {/* User dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setShowDropdown(!showDropdown)}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                {user?.email?.charAt(0).toUpperCase()}
-              </div>
-              <span className="text-sm font-medium text-gray-900">{user?.email}</span>
-              <span className="text-gray-600">▼</span>
-            </button>
+        <h2 className="text-lg font-bold text-slate-800">
+          SkillForge
+        </h2>
 
-            {/* Dropdown menu */}
-            {showDropdown && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
-                <a
-                  href="#profile"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  👤 Profile
-                </a>
-                <a
-                  href="#settings"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  ⚙️ Settings
-                </a>
-                <hr className="my-2" />
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                >
-                  🚪 Logout
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
       </div>
-    </nav>
+
+      {/* Right */}
+      <div className="flex items-center gap-4">
+
+        <div className="text-sm text-slate-600">
+          Welcome, {user?.name || "Student"}
+        </div>
+
+        <div className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+          {user?.name?.charAt(0) || "S"}
+        </div>
+
+      </div>
+
+    </header>
   );
 };
 
