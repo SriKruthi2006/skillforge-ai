@@ -1,25 +1,33 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import quizData from "../../data/quizData";
-import coursesData from "../../data/coursesData";
+import { getCourse } from "../../services/courseService";
 
 const TestPage = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
 
-  const selectedCourse = coursesData.find(
-    (course) => course.id === Number(courseId)
-  );
-
-  const courseName = selectedCourse?.title;
-  const questions = quizData[courseName] || [];
-
+  const [courseName, setCourseName] = useState("");
   const [started, setStarted] = useState(false);
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState("");
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
   const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const res = await getCourse(courseId);
+        setCourseName(res.data.title || "");
+      } catch (e) {
+        console.error("failed to load course info", e);
+      }
+    };
+    fetch();
+  }, [courseId]);
+
+  const questions = quizData[courseName] || [];
 
   // ⏱ Timer Logic
   useEffect(() => {
@@ -78,7 +86,7 @@ const TestPage = () => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
-  if (!selectedCourse) {
+  if (!courseName) {
     return <h1>Course Not Found</h1>;
   }
 
@@ -159,10 +167,9 @@ const TestPage = () => {
 
         <button
           onClick={handleNext}
-          disabled={!selected}
           className="mt-6 px-6 py-2 bg-purple-600 rounded-lg"
         >
-          {current === questions.length - 1 ? "Submit" : "Next"}
+          {current + 1 < questions.length ? "Next" : "Submit"}
         </button>
       </div>
     </div>

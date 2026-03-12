@@ -1,11 +1,25 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import coursesData from "../../../data/coursesData";
+import { getCourses } from "../../../services/courseService";
 
 const NewCourses = () => {
   const navigate = useNavigate();
+  const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const res = await getCourses();
+        setCourses(res.data || []);
+      } catch (e) {
+        console.error("failed to load courses", e);
+      }
+    };
+    fetch();
+  }, []);
 
   const handleOpenCourse = (id) => {
-    navigate(`/student/courses?courseId=${id}`);
+    navigate(`/student/courses/${id}/player`);
   };
 
   return (
@@ -13,7 +27,7 @@ const NewCourses = () => {
       <h2 className="text-2xl font-bold mb-6">New Courses</h2>
 
       <div className="grid md:grid-cols-3 gap-6">
-        {coursesData.map((course) => (
+        {courses.map((course) => (
           <div
             key={course.id}
             className="bg-[#1e293b] p-6 rounded-xl"

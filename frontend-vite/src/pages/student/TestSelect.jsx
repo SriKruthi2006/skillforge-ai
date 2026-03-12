@@ -1,8 +1,29 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import coursesData from "../../data/coursesData";
+import { getCourses } from "../../services/courseService";
 
 const TestSelect = () => {
   const navigate = useNavigate();
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const res = await getCourses();
+        setCourses(res.data || []);
+      } catch (e) {
+        console.error("failed to load courses", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetch();
+  }, []);
+
+  if (loading) {
+    return <p className="text-white">Loading...</p>;
+  }
 
   return (
     <div>
@@ -11,7 +32,7 @@ const TestSelect = () => {
       </h1>
 
       <div className="grid md:grid-cols-3 gap-6">
-        {coursesData.map((course) => (
+        {courses.map((course) => (
           <div
             key={course.id}
             className="bg-[#0f172a] p-6 rounded-2xl shadow-lg"

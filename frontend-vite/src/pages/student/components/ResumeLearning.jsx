@@ -1,14 +1,30 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import coursesData from "../../../data/coursesData";
+import { getCourses } from "../../../services/courseService";
 
 const ResumeLearning = () => {
   const navigate = useNavigate();
+  const [lastCourse, setLastCourse] = useState(null);
 
-  // Example: last active course
-  const lastCourse = coursesData[0];
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const res = await getCourses();
+        const arr = res.data || [];
+        if (arr.length) setLastCourse(arr[0]);
+      } catch (e) {
+        console.error("could not fetch courses", e);
+      }
+    };
+    fetch();
+  }, []);
+
+  if (!lastCourse) {
+    return null;
+  }
 
   const handleResume = () => {
-    navigate(`/student/courses?courseId=${lastCourse.id}`);
+    navigate(`/student/courses/${lastCourse.id}/player`);
   };
 
   return (
@@ -16,7 +32,7 @@ const ResumeLearning = () => {
       <div>
         <h3 className="text-lg mb-2">Resume Learning</h3>
         <p className="text-gray-400">
-          {lastCourse.title} - {lastCourse.progress}% completed
+          {lastCourse.title}
         </p>
       </div>
 

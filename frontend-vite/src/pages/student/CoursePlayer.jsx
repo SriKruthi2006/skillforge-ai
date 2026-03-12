@@ -1,116 +1,232 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import coursesData from "../../data/coursesData";
-import axios from "axios";
+import {
+  getTopicsByCourse,
+  getLessonsByTopic,
+  getCourseProgressDetails,
+  markLessonComplete,
+  getCourse,
+} from "../../services/courseService";
+
+import CourseModules from "../../components/CourseModules";
+import LessonViewer from "../../components/LessonViewer";
 
 const CoursePlayer = () => {
   const { courseId } = useParams();
-  const navigate = useNavigate();
 
-  const selectedCourse = coursesData.find(
-    (course) => course.id === Number(courseId)
-  );
-
+  const [courseTitle, setCourseTitle] = useState("");
+  const [topics, setTopics] = useState([]);
+  const [lessonsMap, setLessonsMap] = useState({});
+  const [selectedLesson, setSelectedLesson] = useState(null);
   const [completedLessons, setCompletedLessons] = useState([]);
-  const [videoUrl, setVideoUrl] = useState(null);
+
+  const [progressDetails, setProgressDetails] = useState({
+    completedLessons: 0,
+    totalLessons: 0,
+    progress: 0,
+  });
+
+  const [loading, setLoading] = useState(true);
+
+  // fullscreen state shared with lesson viewer
+  const [fullscreen, setFullscreen] = useState(false);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:8080/api/progress/${courseId}`)
-      .then((res) => setCompletedLessons(res.data))
-      .catch(() => {});
+    const load = async () => {
+      setLoading(true);
+
+      try {
+        const courseRes = await getCourse(courseId);
+        setCourseTitle(courseRes.data.title || "");
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        const topicsRes = await getTopicsByCourse(courseId);
+        const t = topicsRes.data || [];
+        setTopics(t);
+
+        const lessonsObj = {};
+
+        await Promise.all(
+          t.map(async (topic) => {
+            const res = await getLessonsByTopic(topic.id);
+            lessonsObj[topic.id] = res.data || [];
+          })
+        );
+
+        setLessonsMap(lessonsObj);
+
+        if (t.length > 0 && lessonsObj[t[0].id]?.length > 0) {
+          setSelectedLesson(lessonsObj[t[0].id][0]);
+        }
+
+      } catch (e) {
+        console.error(e);
+      }
+
+      try {
+        const progRes = await getCourseProgressDetails(courseId);
+        setProgressDetails(progRes.data);
+        setCompletedLessons(progRes.data.completedLessonIds || []);
+      } catch (e) {
+        console.error(e);
+      }
+
+      setLoading(false);
+    };
+
+    load();
   }, [courseId]);
 
-  const markCompleted = async (lessonTitle) => {
-    const updated = [...completedLessons, lessonTitle];
-    setCompletedLessons(updated);
-
-    await axios.post("http://localhost:8080/api/progress", {
-      courseId,
-      lessonTitle,
-    });
+  const handleLessonClick = (lesson) => {
+    setSelectedLesson(lesson);
   };
 
-  if (!selectedCourse) return <h1>Course Not Found</h1>;
+  const handleMarkComplete = async (lesson) => {
+    try {
+      await markLessonComplete(lesson.id);
+
+      setCompletedLessons((prev) => [...prev, lesson.id]);
+
+      const updated = await getCourseProgressDetails(courseId);
+      setProgressDetails(updated.data);
+
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const getAllLessons = () => {
+    return Object.values(lessonsMap).flat();
+  };
+
+  const handleNextLesson = () => {
+    const all = getAllLessons();
+    const index = all.findIndex((l) => l.id === selectedLesson?.id);
+
+    if (index < all.length - 1) {
+      setSelectedLesson(all[index + 1]);
+    }
+  };
+
+  const handlePrevLesson = () => {
+    const all = getAllLessons();
+    const index = all.findIndex((l) => l.id === selectedLesson?.id);
+
+    if (index > 0) {
+      setSelectedLesson(all[index - 1]);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-[calc(100vh-5rem)]">
+        Loading course...
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h1 className="text-4xl font-bold mb-6">
-        {selectedCourse.title}
-      </h1>
+    <div className="flex flex-col h-[calc(100vh-5rem)] bg-slate-50">
 
-      <div className="space-y-4">
-        {selectedCourse.lessons.map((lesson, index) => {
-          const isCompleted = completedLessons.includes(lesson.title);
+      {/* Hide header in fullscreen */}
+      {!fullscreen && (
+        <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-8 py-6 shadow-lg">
+          <div className="flex items-start justify-between max-w-7xl mx-auto">
 
-          return (
-            <div
-              key={index}
-              className="bg-[#1e293b] p-4 rounded-xl flex justify-between items-center"
-            >
-              <div>
-                <p className="font-medium flex items-center gap-2">
-                  {lesson.title}
-                  {isCompleted && (
-                    <span className="text-green-400">✔</span>
-                  )}
-                </p>
-                <span className="text-xs text-gray-400">
-                  {lesson.level}
-                </span>
+            <div className="flex-1">
+
+              <div className="flex items-center gap-2 mb-3 text-sm text-blue-100">
+                <span>My Courses</span>
+                <span>›</span>
+                <span>{courseTitle}</span>
               </div>
 
-              <div className="flex gap-3">
-                <button
-                  onClick={() =>
-                    setVideoUrl("https://www.youtube.com/embed/dQw4w9WgXcQ")
-                  }
-                  className="px-4 py-2 bg-blue-600 rounded-lg text-sm"
-                >
-                  Watch Video
-                </button>
+              <h1 className="text-4xl font-bold mb-3">
+                {courseTitle}
+              </h1>
 
-                <button
-                  onClick={() => navigate(`/student/tests/${courseId}`)}
-                  className="px-4 py-2 bg-green-600 rounded-lg text-sm"
-                >
-                  Assignment
-                </button>
+              <div className="flex items-center gap-6 text-sm">
 
-                {!isCompleted && (
-                  <button
-                    onClick={() => markCompleted(lesson.title)}
-                    className="px-4 py-2 bg-purple-600 rounded-lg text-sm"
-                  >
-                    Mark Done
-                  </button>
-                )}
+                <div className="flex items-center gap-2">
+                  <span>👁</span>
+                  <span>{progressDetails.totalLessons} lessons</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span>📄</span>
+                  <span>Beginner</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span>🏷</span>
+                  <span>By Admin</span>
+                </div>
+
+              </div>
+
+            </div>
+
+            <div className="text-right">
+              <div className="bg-white/20 backdrop-blur-md rounded-lg px-5 py-3">
+                <div className="text-sm text-blue-100 mb-1">
+                  Your Progress
+                </div>
+                <div className="text-3xl font-bold">
+                  {progressDetails.progress}%
+                </div>
               </div>
             </div>
-          );
-        })}
-      </div>
 
-      {/* 🎥 VIDEO MODAL */}
-      {videoUrl && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center">
-          <div className="bg-[#0f172a] p-4 rounded-xl relative w-[800px]">
-            <button
-              onClick={() => setVideoUrl(null)}
-              className="absolute top-2 right-2 text-white"
-            >
-              ✖
-            </button>
-            <iframe
-              width="100%"
-              height="400"
-              src={videoUrl}
-              title="Video"
-              allowFullScreen
-            />
           </div>
         </div>
       )}
+
+      {/* MAIN CONTENT */}
+
+      <div className="flex flex-1 overflow-hidden gap-6 p-6 max-w-7xl mx-auto w-full">
+
+        {/* LESSON SIDEBAR (always visible) */}
+
+        <div className="w-80 bg-white rounded-xl shadow-md border border-slate-200 flex flex-col overflow-hidden">
+
+          <div className="border-b p-4 font-bold text-slate-700">
+            COURSE CONTENT
+          </div>
+
+          <CourseModules
+            topics={topics.map((t) => ({
+              ...t,
+              lessons: lessonsMap[t.id] || [],
+            }))}
+            completedLessons={completedLessons}
+            selectedLessonId={selectedLesson?.id}
+            onLessonClick={handleLessonClick}
+          />
+
+        </div>
+
+        {/* LESSON CONTENT */}
+
+        <div className="flex-1 overflow-hidden">
+
+          <LessonViewer
+            lesson={selectedLesson}
+            isCompleted={completedLessons.includes(selectedLesson?.id)}
+            onMarkComplete={handleMarkComplete}
+            onNextLesson={handleNextLesson}
+            onPrevLesson={handlePrevLesson}
+            courseProgress={progressDetails}
+            fullscreen={fullscreen}
+            setFullscreen={setFullscreen}
+          />
+
+        </div>
+
+      </div>
+
     </div>
   );
 };

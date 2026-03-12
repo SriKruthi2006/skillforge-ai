@@ -1,8 +1,8 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import logo from "../../assets/skillforge-icon.png";
 
 const StudentDashboard = () => {
+
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -12,68 +12,78 @@ const StudentDashboard = () => {
   };
 
   return (
-    <div className="bg-[#020617] text-white min-h-screen w-full">
 
-      {/* NAVBAR */}
-      <nav className="bg-[#0f172a] py-5 px-10 flex justify-between items-center">
-        <h2 className="text-xl font-semibold">SkillForge</h2>
-        <img
-          src={logo}
-          alt="logo"
-          className="w-14 h-14 object-contain"
-        />
-      </nav>
+    <div className="flex h-screen bg-[#020617] text-white">
 
-      <div className="flex min-h-screen">
+      {/* SIDEBAR */}
 
-        {/* SIDEBAR */}
-        <aside className="w-60 bg-[#020617] p-6 flex flex-col border-r border-[#1e293b]">
-          <h3 className="text-lg mb-6">Menu</h3>
+      <aside className="w-64 bg-[#020617] border-r border-[#1e293b] flex flex-col justify-between">
 
-          <ul className="space-y-3 flex-1">
+        <div>
 
-            <SidebarLink to="/student/dashboard" label="dashboard" />
-            <SidebarLink to="/student/courses" label="courses" />
-            <SidebarLink to="/student/tests" label="tests" />
-            <SidebarLink to="/student/results" label="results" />
-            <SidebarLink to="/student/profile" label="profile" />
+          <div className="p-6 text-xl font-bold">
+            SkillForge
+          </div>
+
+          <ul className="px-4 space-y-3">
+
+            <SidebarLink to="/student/dashboard" label="Dashboard" />
+            <SidebarLink to="/student/courses" label="Courses" />
+            <SidebarLink to="/student/tests" label="Tests" />
+            <SidebarLink to="/student/results" label="Results" />
+            <SidebarLink to="/student/profile" label="Profile" />
 
           </ul>
 
+        </div>
+
+        {/* LOGOUT */}
+
+        <div className="p-6">
+
           <button
             onClick={handleLogout}
-            className="mt-auto py-3 rounded-xl bg-red-500 hover:bg-red-600 transition font-semibold"
+            className="w-full py-3 rounded-xl bg-red-500 hover:bg-red-600 font-semibold"
           >
             Logout
           </button>
-        </aside>
 
-        {/* MAIN CONTENT */}
-        <main className="flex-1 p-14">
-          <Outlet />
-        </main>
+        </div>
 
-      </div>
+      </aside>
+
+      {/* MAIN CONTENT */}
+
+      <main className="flex-1 p-10 overflow-y-auto">
+        <Outlet />
+      </main>
+
     </div>
+
   );
 };
 
-/* Reusable Sidebar Link */
+/* SIDEBAR LINK */
+
 const SidebarLink = ({ to, label }) => (
+
   <li>
+
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `block px-4 py-3 rounded-xl capitalize transition ${
+        `block px-4 py-3 rounded-xl transition ${
           isActive
-            ? "bg-gradient-to-r from-[#6c63ff] to-[#7c3aed]"
-            : "hover:bg-[#111827]"
+            ? "bg-gradient-to-r from-purple-500 to-indigo-500"
+            : "hover:bg-[#1e293b]"
         }`
       }
     >
       {label}
     </NavLink>
+
   </li>
+
 );
 
 export default StudentDashboard;
