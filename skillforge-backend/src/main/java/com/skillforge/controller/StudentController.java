@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import com.skillforge.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api/student")
+@CrossOrigin(origins = "*")
 public class StudentController {
 
     @Autowired
@@ -32,25 +34,20 @@ public class StudentController {
 
         Map<String, Object> data = new HashMap<>();
 
-        // 🔎 Fetch user from database
         User user = userRepository.findById(studentId).orElse(null);
-
-        // DEBUG: check what is returned
-        System.out.println("User from DB: " + user);
 
         String name = "Student";
         if (user != null) {
             name = user.getName();
         }
 
-        // Completed lessons
         int completedLessons =
                 progressRepository.countByStudentIdAndCompletedTrue(studentId);
 
-        // Total lessons
         int totalLessons = (int) lessonRepository.count();
 
         int progress = 0;
+
         if (totalLessons > 0) {
             progress = (completedLessons * 100) / totalLessons;
         }
@@ -59,6 +56,9 @@ public class StudentController {
         data.put("completedLessons", completedLessons);
         data.put("totalLessons", totalLessons);
         data.put("progress", progress);
+
+        // empty courses list for now
+        data.put("courses", new java.util.ArrayList<>());
 
         return data;
     }

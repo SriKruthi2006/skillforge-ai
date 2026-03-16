@@ -10,7 +10,11 @@ const API = axios.create({
 // attach token
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
   return config;
 });
 
@@ -18,28 +22,36 @@ API.interceptors.request.use((config) => {
 API.interceptors.response.use(
   (res) => res,
   (err) => {
+
     if (err.response?.status === 401) {
+
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+
       window.location.href = "/login";
     }
+
     return Promise.reject(err);
   }
 );
 
-// 🔐 AUTH
+// AUTH
 export const authAPI = {
   login: (data) => API.post("/auth/login", data),
   register: (data) => API.post("/auth/register", data),
 };
 
-// 🎓 STUDENT
+// STUDENT
 export const studentAPI = {
-  getDashboard: () => API.get("/student/dashboard"),
-  getCourses: () => API.get("/student/courses"),
+
+  getDashboard: (studentId) =>
+    API.get(`/student/dashboard/${studentId}`),
+
+  getCourses: () =>
+    API.get("/student/courses"),
 };
 
-// 🛠 ADMIN
+// ADMIN
 export const adminAPI = {
   getDashboard: () => API.get("/admin/dashboard"),
 };
